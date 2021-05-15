@@ -6,9 +6,9 @@ namespace BankApp.Web.Api.Controllers
 {
     public class AccountController : Controller
     {
-        private IAccountService _accountService;
+        private ICustomerService _accountService;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(ICustomerService accountService)
         {
             _accountService = accountService;
         }

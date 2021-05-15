@@ -10,7 +10,7 @@ namespace BankApp.Infrastructure.IoC
     {
         public static void RegisterServises(IServiceCollection services)
         {
-            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ICustomerService, CustomerService>();
 
             services.AddScoped<IAccountRepository, AccountRepository>();
         }
