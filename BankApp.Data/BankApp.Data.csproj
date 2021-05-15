@@ -20,7 +20,10 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Reposetories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BankApp.Domain\BankApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>

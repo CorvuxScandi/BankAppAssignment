@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 #nullable disable
 
-namespace BankApp.Data.Models
+namespace BankApp.Domain.Models
 {
     public partial class Transaction
     {

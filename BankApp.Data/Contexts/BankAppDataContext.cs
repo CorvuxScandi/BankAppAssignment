@@ -1,10 +1,9 @@
-﻿using System;
+﻿using BankApp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace BankApp.Data.Models
+namespace BankApp.Data.Contexts
 {
     public partial class BankAppDataContext : DbContext
     {
