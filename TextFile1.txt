@@ -1,0 +1,57 @@
+
+Skapa en bankapplikation 
+
+Beskrivning:  
+Uppgiften handlar om att skapa en del av en bankapplikation som skall köras via webben. 
+Eftersom banken planerar att bygga en mobilapplikation också skall lösningen innehålla ett web api som arbetar mot en färdig 
+databas som ni får tillgång till. Den skall skrivas med ASP.NET Web api.  
+
+Klientdelen är en webbapplikation som kommunicerar med web api:et. 
+Den skall skrivas med någon ASP.NET teknik (MVC, Razor pages, Blazor). 
+Uppgiften består av en obligatorisk G-del och en valfri VG-del. 
+
+Krav för att lösningen skall bli godkänd (Betyget G): 
+
+-Klientdelen skall innehålla två typer av användare. Kunder och administratörer. Det skall finnas en inloggning 
+och hantering av användare via Core Identity. Applikationen skall hantera dessa två typer av användare och både 
+authentication och authorization. Man måste logga in som admin för att få tillgång till admin funktionalitet. 
+En kund skall inte kunna komma åt denna funktionalitet och en admin skall inte få tillgång till 
+funktionalitet som hör till kunder. 
+
+-En Admin användare skall kunna lägga upp nya användare (kunder) och skapa ett konto som gör att kunden kan logga in. 
+När en kund är inlagd skall admin också kunna lägga upp lån för kunden.
+Den skall även kunna skapa nya kontotyper(AccountTypes) och sätta ränta för dessa. 
+Det räcker med ett admin konto dvs en admin behöver inte kunna lägga upp andra admins. 
+
+-En kund skall kunna logga in och få en översikt på alla sina konton. 
+Där skall man se typen av konto och det aktuella saldot . Man skall sedan kunna gå in på kontot och se transaktioner 
+som är gjorda. Man skall kunna göra överföringar mellan sina egna konton och även till andra kunder i banken om man 
+har deras kontonummer. I det fallet dras pengar från det egna kontot och läggs till på den andra kundens konto.
+
+-Pengar skall sättas in på ett konto om en kund tar ett lån. Detta görs av en admin som lägger upp ett lån för kunden
+och då skall pengarna hamna på ett av kundens konton. 
+
+-Ni skall utgå från den databas som ni får med exempeldata.
+Men det är tillåtet att göra ändringar i den för att anpassa den till er lösning. Eftersom det är mycket testdata i 
+vissa tabeller är det viktigt att ni tänker på prestanda i er lösning. Databasen består av fejkade uppgifter men har 
+likheter med en riktig struktur.
+
+-Måste finnas ett tydligt tänk kring arkitektur i er lösning både på klienten och i web api:et. Ni skall visa att ni 
+kan använda repositorys och service skikt. 
+
+
+Extra frivilliga krav för högre betyg (Betyget VG): 
+
+-Större krav på arkitektur. Ni måste visa att ni kan använda Clean architechture, N-tier eller liknande och implementera 
+det i er lösning. 
+
+-Enhetstester på alla viktiga funktioner(transaktioner som insättningar, överföringar, uttag) .
+
+-Större krav på säkerhet i web api:et. JWT Tokens eller basic authentication måste användas och det skall inte 
+gå att komma åt alla saker i web api:et som vanlig användare (kund). 
+
+Betyg Det går att få VG, G och IG på uppgiften. Den första delen är obligatorisk för att kunna få G på hela kursen 
+och den andra för att kunna få VG.  
+Redovisning När ni är klara laddar ni upp er lösning till inlämningsmappen på kurswebben. 
+Redovisning sker genom att du visar läraren den fungerande uppgiften. 
+Skicka INTE in något via mail! Senaste tidpunkt för redovisning är sista veckan på kursen. 

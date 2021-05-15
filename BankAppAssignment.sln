@@ -13,15 +13,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bankApp.Infrastructure.Data
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BankApp.Infrastructure.IoC", "BankApp.Infrastructure.IoC", "{2AB49A3D-FDC5-42CB-B862-EB58636FD642}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankApp.Data", "BankApp.Data\BankApp.Data.csproj", "{89812CC5-7360-4D46-94DC-50902C425ADC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Data", "BankApp.Data\BankApp.Data.csproj", "{89812CC5-7360-4D46-94DC-50902C425ADC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankApp.Web.Api", "BankApp.Web.Api\BankApp.Web.Api.csproj", "{EEEF3155-DB04-425F-87F0-769E130FF14A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Web.Api", "BankApp.Web.Api\BankApp.Web.Api.csproj", "{EEEF3155-DB04-425F-87F0-769E130FF14A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankApp.Domain", "BankApp.Domain\BankApp.Domain.csproj", "{48A216DE-82B3-48ED-B84F-7EF7476905E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Domain", "BankApp.Domain\BankApp.Domain.csproj", "{48A216DE-82B3-48ED-B84F-7EF7476905E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankApp.Application", "BankApp.Application\BankApp.Application.csproj", "{659B7216-DF26-4ADA-AFEB-8A9793CEF928}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Application", "BankApp.Application\BankApp.Application.csproj", "{659B7216-DF26-4ADA-AFEB-8A9793CEF928}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankApp.Infrastructure.IoC", "BankApp.Infrastructure.IoC\BankApp.Infrastructure.IoC.csproj", "{8BCC79AD-C3F7-453C-A945-B5154D58EC1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Infrastructure.IoC", "BankApp.Infrastructure.IoC\BankApp.Infrastructure.IoC.csproj", "{8BCC79AD-C3F7-453C-A945-B5154D58EC1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{87BA7DCA-3BC5-4F9A-9A74-65EFC68D74AF}"
+	ProjectSection(SolutionItems) = preProject
+		TextFile1.txt = TextFile1.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

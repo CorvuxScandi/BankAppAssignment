@@ -29,5 +29,17 @@ namespace BankApp.Data.Reposetories
         {
             return _context.Accounts;
         }
+
+        public void PostAccount(Account account)
+        {
+            _context.Add(account);
+            _context.SaveChanges();
+        }
+
+        public void PutAccount(Account account)
+        {
+            _context.Update(account);
+            _context.SaveChanges();
+        }
     }
 }
