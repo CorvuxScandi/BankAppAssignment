@@ -1,16 +1,23 @@
 ﻿using BankApp.Application.ApiModels;
+using BankApp.Domain.DomainModels;
 using BankApp.Domain.Models;
 
 namespace BankApp.Application.Interfaces
 {
     public interface IAdminService
     {
-        void AddDisposition(Disposition disposition);
 
-        void PostNewAccount(BankCustomerModel newAccount);
 
-        void DeleteAccount(BankCustomerModel account);
+        ApplicationResponce AddAccountType(AccountType accountType);
 
-        void AddLoan(Loan newLoan);
+        ApplicationResponce AddNewCustomerProfile(BankCustomerModel customerModel);
+
+        ApplicationResponce UpdateCustomerProfile(BankCustomerModel customerModel);
+
+        ApplicationResponce FreezeAccount(BankCustomerModel account);
+
+        ApplicationResponce FreezeCustomer(Customer customer);
+
+        ApplicationResponce GetCustomerProfile(BankCustomerModel customerModel);
     }
 }
