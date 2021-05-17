@@ -14,17 +14,17 @@ namespace BankApp.Application.Services
 {
     public class AdminServices : IAdminService
     {
-        private IAccountRepository _accountRepo;
-        private IAccountTypeRepository _TypeRepo;
-        private ICardRepository _cardRepo;
-        private ICustomerRepository _customerRepo;
-        private IDispositionRepository _dispositionRepo;
-        private ILoanRepository _loanRepo;
+        private IRepository<Account> _accountRepo;
+        private IRepository<AccountType> _TypeRepo;
+        private IRepository<Card> _cardRepo;
+        private IRepository<Customer> _customerRepo;
+        private IRepository<Disposition> _dispositionRepo;
+        private IRepository<Loan> _loanRepo;
 
-        public AdminServices(IAccountRepository accountRepo,
-            IAccountTypeRepository typeRepo, ICardRepository cardRepo,
-            ICustomerRepository customerRepo, IDispositionRepository dispositionRepo,
-            ILoanRepository loanRepo)
+        public AdminServices(IRepository<Account> accountRepo,
+            IRepository<AccountType> typeRepo, IRepository<Card> cardRepo,
+            IRepository<Customer> customerRepo, IRepository<Disposition> dispositionRepo,
+            IRepository<Loan> loanRepo)
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -36,23 +36,38 @@ namespace BankApp.Application.Services
 
         public ApplicationResponce AddAccountType(AccountType accountType)
         {
-            _TypeRepo.PostType(accountType);
-            return new()
+            _TypeRepo.Create(accountType);
+            int changedElements = _TypeRepo.Save();
+            if (changedElements > 0)
             {
-                ResponceCode = 200
-            };
+                return new()
+                {
+                    ResponceCode = 200
+                };
+            }
+            else
+            {
+                return new()
+                {
+                    ResponceCode = 400
+                };
+            }
         }
 
         public ApplicationResponce AddNewCustomerProfile(BankCustomerModel model, IdentityUser identity)
         {
-            _customerRepo.PostCustomer(model.AccountHolder);
-            _accountRepo.PostAccount(model.Accounts[0]);
-            _dispositionRepo.PostDisposition(new()
+            _customerRepo.Create(model.AccountHolder);
+            if (_customerRepo.Save() < 0) return new() { ResponceCode = 500 };
+
+            _accountRepo.Create(model.Accounts[0]);
+            if (_customerRepo.Save() < 0) return new() { ResponceCode = 500 };
+
+            _dispositionRepo.Create(new()
             {
                 AccountId = model.Accounts[0].AccountId,
                 CustomerId = model.AccountHolder.CustomerId
             });
-            
+            if (_dispositionRepo.Save() < 0) return new() { ResponceCode = 500 };
 
             return new()
             {
@@ -75,7 +90,7 @@ namespace BankApp.Application.Services
             throw new NotImplementedException();
         }
 
-        public ApplicationResponce UpdateCustomerProfile(BankCustomerModel customer)
+        public ApplicationResponce UpdateCustomerProfile(BankCustomerModel customerModel, IdentityUser identity)
         {
             throw new NotImplementedException();
         }

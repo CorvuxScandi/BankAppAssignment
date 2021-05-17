@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BankApp.Data.Reposetories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : IRepository<Customer>
     {
         public BankAppDataContext _context;
 
@@ -14,32 +14,34 @@ namespace BankApp.Data.Reposetories
             _context = context;
         }
 
-        public void DeleteCustomer(Customer customer)
+        public void Create(Customer entity)
         {
-            _context.Customers.Remove(customer);
-            _context.SaveChanges();
+            _context.Add(entity);
         }
 
-        public Customer GetCustomer(int id)
+        public void Delete(Customer entity)
         {
-            return _context.Customers.Find(id);
+            _context.Remove(entity);
         }
 
-        public IEnumerable<Customer> GetCustomers()
+        public IEnumerable<Customer> GetAll()
         {
             return _context.Customers;
         }
 
-        public void PostCustomer(Customer customer)
+        public Customer GetById(int id)
         {
-            _context.Add(customer);
-            _context.SaveChanges();
+            return _context.Customers.Find(id);
         }
 
-        public void PutCustomer(Customer customer)
+        public int Save()
         {
-            _context.Update(customer);
-            _context.SaveChanges();
+            return _context.SaveChanges();
+        }
+
+        public void Update(Customer entity)
+        {
+            _context.Update(entity);
         }
     }
 }

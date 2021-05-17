@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BankApp.Data.Reposetories
 {
-    public class DispositionRepository : IDispositionRepository
+    public class DispositionRepository : IRepository<Disposition>
     {
         public BankAppDataContext _context;
 
@@ -14,32 +14,34 @@ namespace BankApp.Data.Reposetories
             _context = context;
         }
 
-        public void DeleteDisposition(Disposition disposition)
+        public void Create(Disposition entity)
         {
-            _context.Dispositions.Remove(disposition);
-            _context.SaveChanges();
+            _context.Add(entity);
         }
 
-        public Disposition GetDisposition(int id)
+        public void Delete(Disposition entity)
         {
-            return _context.Dispositions.Find(id);
+            _context.Remove(entity);
         }
 
-        public IEnumerable<Disposition> GetDispositions()
+        public IEnumerable<Disposition> GetAll()
         {
             return _context.Dispositions;
         }
 
-        public void PostDisposition(Disposition disposition)
+        public Disposition GetById(int id)
         {
-            _context.Add(disposition);
-            _context.SaveChanges();
+            return _context.Dispositions.Find(id);
         }
 
-        public void PutDisposition(Disposition disposition)
+        public int Save()
         {
-            _context.Update(disposition);
-            _context.SaveChanges();
+            return _context.SaveChanges();
+        }
+
+        public void Update(Disposition entity)
+        {
+            _context.Update(entity);
         }
     }
 }

@@ -3,31 +3,27 @@ using BankApp.Application.Interfaces;
 using BankApp.Domain.DomainModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 
 namespace BankApp.Application.Services
 {
-    public class AccountService : ICustomerService
+    public class CustomerService : ICustomerService
     {
-        public IAccountRepository _accountRepo;
-        public IAccountTypeRepository _TypeRepo;
-        public ICardRepository _cardRepo;
-        public ICustomerRepository _customerRepo;
-        public IDispositionRepository _dispositionRepo;
-        public ILoanRepository _loanRepo;
-        public ITransactionRepository _transactionRepo;
+        public IRepository<Account> _accountRepo;
+        public IRepository<AccountType> _TypeRepo;
+        public IRepository<Card> _cardRepo;
+        public IRepository<Customer> _customerRepo;
+        public IRepository<Disposition> _dispositionRepo;
+        public IRepository<Loan> _loanRepo;
+        public IRepository<Transaction> _transactionRepo;
 
-        public AccountService(
-            IAccountRepository accountRepo, 
-            IAccountTypeRepository typeRepo, 
-            ICardRepository cardRepo, 
-            ICustomerRepository customerRepo, 
-            IDispositionRepository dispositionRepo, 
-            ILoanRepository loanRepo, 
-            ITransactionRepository transactionRepo)
+        public CustomerService(IRepository<Account> accountRepo,
+            IRepository<AccountType> typeRepo,
+            IRepository<Card> cardRepo,
+            IRepository<Customer> customerRepo,
+            IRepository<Disposition> dispositionRepo,
+            IRepository<Loan> loanRepo,
+            IRepository<Transaction> transactionRepo)
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -43,28 +39,27 @@ namespace BankApp.Application.Services
             Account account = transaction.AccountNavigation;
             if (account.Balance < transaction.Amount)
             {
-
-                return new() 
+                return new()
                 {
-                    ResponceCode = 409, 
-                    ResponceText = "Account balance too low" 
+                    ResponceCode = 409,
+                    ResponceText = "Account balance too low"
                 };
             }
 
             account.Balance -= transaction.Amount;
 
-            _accountRepo.PutAccount(account);
+            _accountRepo.Update(account);
 
-            return new() 
+            return new()
             {
-                ResponceCode = 202, 
-                ResponceText = "Succsess" 
+                ResponceCode = 202,
+                ResponceText = "Succsess"
             };
         }
 
         public ApplicationResponce GetAccountInfo(int customerId)
         {
-            if (_customerRepo.GetCustomer(customerId) == null)
+            if (_customerRepo.GetById(customerId) == null)
             {
                 return new()
                 {
@@ -72,19 +67,18 @@ namespace BankApp.Application.Services
                     ResponceText = "Customer not found"
                 };
             }
-                
-            
-            var CustomerDispositions = 
+
+            var CustomerDispositions =
                 _dispositionRepo
-                .GetDispositions()
+                .GetAll()
                 .Where(x => x.CustomerId == customerId);
 
             BankCustomerModel bankCustomer = new();
 
-            bankCustomer.AccountHolder = 
+            bankCustomer.AccountHolder =
                 _customerRepo
-                .GetCustomer(customerId);
-            
+                .GetById(customerId);
+
             foreach (var item in CustomerDispositions)
             {
                 bankCustomer.Accounts
@@ -95,16 +89,16 @@ namespace BankApp.Application.Services
                     .AddRange(item.Account.Loans);
             }
 
-            return new() 
+            return new()
             {
-                ResponceCode = 200, 
+                ResponceCode = 200,
                 ResponceBody = bankCustomer
             };
         }
 
         public ApplicationResponce GetTransactions(int accountId)
         {
-            if (_accountRepo.GetAccount(accountId) == null)
+            if (_accountRepo.GetById(accountId) == null)
             {
                 return new()
                 {
@@ -113,10 +107,10 @@ namespace BankApp.Application.Services
                 };
             };
 
-
-            return new() { 
-                ResponceCode = 200, 
-                ResponceBody = _accountRepo.GetAccount(accountId).Transactions.ToList() 
+            return new()
+            {
+                ResponceCode = 200,
+                ResponceBody = _accountRepo.GetById(accountId).Transactions.ToList()
             };
         }
     }

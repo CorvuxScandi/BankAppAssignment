@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BankApp.Data.Reposetories
 {
-    public class LoanRepository : ILoanRepository
+    public class LoanRepository : IRepository<Loan>
     {
         public BankAppDataContext _context;
 
@@ -14,32 +14,34 @@ namespace BankApp.Data.Reposetories
             _context = context;
         }
 
-        public void DeleteLoan(Loan loan)
+        public void Create(Loan entity)
         {
-            _context.Loans.Remove(loan);
-            _context.SaveChanges();
+            _context.Add(entity);
         }
 
-        public Loan GetLoan(int id)
+        public void Delete(Loan entity)
         {
-            return _context.Loans.Find(id);
+            _context.Remove(entity);
         }
 
-        public IEnumerable<Loan> GetLoans()
+        public IEnumerable<Loan> GetAll()
         {
             return _context.Loans;
         }
 
-        public void PostLoan(Loan loan)
+        public Loan GetById(int id)
         {
-            _context.Add(loan);
-            _context.SaveChanges();
+            return _context.Loans.Find(id);
         }
 
-        public void PutLoan(Loan loan)
+        public int Save()
         {
-            _context.Update(loan);
-            _context.SaveChanges();
+            return _context.SaveChanges();
+        }
+
+        public void Update(Loan entity)
+        {
+            _context.Update(entity);
         }
     }
 }
