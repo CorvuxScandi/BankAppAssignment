@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
-#nullable disable
 
 namespace BankApp.Domain.Models
 {
@@ -25,6 +27,7 @@ namespace BankApp.Domain.Models
         public string Telephonecountrycode { get; set; }
         public string Telephonenumber { get; set; }
         public string Emailaddress { get; set; }
+        public IdentityUser IdentityUser { get; set; }
 
         public virtual ICollection<Disposition> Dispositions { get; set; }
     }

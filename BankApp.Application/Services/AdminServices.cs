@@ -3,6 +3,7 @@ using BankApp.Application.Interfaces;
 using BankApp.Domain.DomainModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +14,12 @@ namespace BankApp.Application.Services
 {
     public class AdminServices : IAdminService
     {
-        public IAccountRepository _accountRepo;
-        public IAccountTypeRepository _TypeRepo;
-        public ICardRepository _cardRepo;
-        public ICustomerRepository _customerRepo;
-        public IDispositionRepository _dispositionRepo;
-        public ILoanRepository _loanRepo;
+        private IAccountRepository _accountRepo;
+        private IAccountTypeRepository _TypeRepo;
+        private ICardRepository _cardRepo;
+        private ICustomerRepository _customerRepo;
+        private IDispositionRepository _dispositionRepo;
+        private ILoanRepository _loanRepo;
 
         public AdminServices(IAccountRepository accountRepo,
             IAccountTypeRepository typeRepo, ICardRepository cardRepo,
@@ -35,12 +36,28 @@ namespace BankApp.Application.Services
 
         public ApplicationResponce AddAccountType(AccountType accountType)
         {
-            throw new NotImplementedException();
+            _TypeRepo.PostType(accountType);
+            return new()
+            {
+                ResponceCode = 200
+            };
         }
 
-        public ApplicationResponce AddNewCustomerProfile(BankCustomerModel model)
+        public ApplicationResponce AddNewCustomerProfile(BankCustomerModel model, IdentityUser identity)
         {
-            throw new NotImplementedException();
+            _customerRepo.PostCustomer(model.AccountHolder);
+            _accountRepo.PostAccount(model.Accounts[0]);
+            _dispositionRepo.PostDisposition(new()
+            {
+                AccountId = model.Accounts[0].AccountId,
+                CustomerId = model.AccountHolder.CustomerId
+            });
+            
+
+            return new()
+            {
+                ResponceCode = 200
+            };
         }
 
         public ApplicationResponce FreezeAccount(BankCustomerModel account)

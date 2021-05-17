@@ -1,6 +1,7 @@
 ﻿using BankApp.Application.ApiModels;
 using BankApp.Domain.DomainModels;
 using BankApp.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BankApp.Application.Interfaces
 {
@@ -10,9 +11,9 @@ namespace BankApp.Application.Interfaces
 
         ApplicationResponce AddAccountType(AccountType accountType);
 
-        ApplicationResponce AddNewCustomerProfile(BankCustomerModel customerModel);
+        ApplicationResponce AddNewCustomerProfile(BankCustomerModel customerModel, IdentityUser identity);
 
-        ApplicationResponce UpdateCustomerProfile(BankCustomerModel customerModel);
+        ApplicationResponce UpdateCustomerProfile(BankCustomerModel customerModel, IdentityUser identity);
 
         ApplicationResponce FreezeAccount(BankCustomerModel account);
 

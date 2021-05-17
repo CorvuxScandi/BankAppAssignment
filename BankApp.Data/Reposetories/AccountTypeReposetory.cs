@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BankApp.Data.Reposetories
 {
-    public class AccountTypeRepository : IAccountTypeRepository
+    public class AccountTypeRepository : IRepository<AccountType>
     {
         public BankAppDataContext _context;
 
@@ -14,32 +14,34 @@ namespace BankApp.Data.Reposetories
             _context = context;
         }
 
-        public void DeleteType(AccountType accountType)
+        public void Create(AccountType entity)
         {
-            _context.AccountTypes.Remove(accountType);
-            _context.SaveChanges();
+            _context.Add(entity);
         }
 
-        public AccountType GetType(int id)
+        public void Delete(AccountType entity)
         {
-            return _context.AccountTypes.Find(id);
+            _context.Remove(entity);
         }
 
-        public IEnumerable<AccountType> GetTypes()
+        public IEnumerable<AccountType> GetAll()
         {
             return _context.AccountTypes;
         }
 
-        public void PostType(AccountType accountType)
+        public AccountType GetById(int id)
         {
-            _context.Add(accountType);
-            _context.SaveChanges();
+            return _context.AccountTypes.Find(id);
         }
 
-        public void PutType(AccountType accountType)
+        public int Save()
         {
-            _context.Update(accountType);
-            _context.SaveChanges();
+            return _context.SaveChanges();
+        }
+
+        public void Update(AccountType entity)
+        {
+            _context.Update(entity);
         }
     }
 }
