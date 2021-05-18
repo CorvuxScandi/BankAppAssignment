@@ -4,6 +4,7 @@ using BankApp.Domain.DomainModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BankApp.Application.Services
 {
@@ -57,9 +58,10 @@ namespace BankApp.Application.Services
             };
         }
 
-        public ApplicationResponce GetAccountInfo(int customerId)
+        public ApplicationResponce FindCustomerIdentity(string id)
         {
-            if (_customerRepo.GetById(customerId) == null)
+            var customer = _customerRepo.GetAll().FirstOrDefault(c => c.ApplicationUserId == id);
+            if (customer == null)
             {
                 return new()
                 {
@@ -67,17 +69,20 @@ namespace BankApp.Application.Services
                     ResponceText = "Customer not found"
                 };
             }
+            return new() { ResponceCode = 200, ResponceBody = customer };
+        }
 
+        public ApplicationResponce GetAccountInfo(Customer customer)
+        {
+            
             var CustomerDispositions =
                 _dispositionRepo
                 .GetAll()
-                .Where(x => x.CustomerId == customerId);
+                .Where(x => x.CustomerId == customer.CustomerId);
 
             BankCustomerModel bankCustomer = new();
 
-            bankCustomer.AccountHolder =
-                _customerRepo
-                .GetById(customerId);
+            bankCustomer.AccountHolder = customer;
 
             foreach (var item in CustomerDispositions)
             {

@@ -1,7 +1,8 @@
 ﻿using BankApp.Application.ApiModels;
 using BankApp.Domain.DomainModels;
+using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
-using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace BankApp.Application.Interfaces
 {
@@ -11,14 +12,14 @@ namespace BankApp.Application.Interfaces
 
         ApplicationResponce AddAccountType(AccountType accountType);
 
-        ApplicationResponce AddNewCustomerProfile(BankCustomerModel customerModel, IdentityUser identity);
+        Task<ApplicationResponce> AddNewCustomerProfile(BankCustomerModel customerModel, RegisterModel registerModel);
 
-        ApplicationResponce UpdateCustomerProfile(BankCustomerModel customerModel, IdentityUser identity);
+        Task<ApplicationResponce> UpdateCustomerProfile(BankCustomerModel customerModel, RegisterModel registerModel);
 
         ApplicationResponce FreezeAccount(BankCustomerModel account);
 
         ApplicationResponce FreezeCustomer(Customer customer);
 
-        ApplicationResponce GetCustomerProfile(BankCustomerModel customerModel);
+        ApplicationResponce GetCustomerProfile(int id);
     }
 }

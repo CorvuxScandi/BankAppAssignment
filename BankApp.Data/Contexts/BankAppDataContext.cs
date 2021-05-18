@@ -136,6 +136,10 @@ namespace BankApp.Data.Contexts
                 entity.Property(e => e.Zipcode)
                     .IsRequired()
                     .HasMaxLength(15);
+                entity.Property(e => e.ApplicationUserId)
+                .HasMaxLength(100)
+                .IsRequired()
+                .HasColumnName("IdentityId");
             });
 
             modelBuilder.Entity<Disposition>(entity =>

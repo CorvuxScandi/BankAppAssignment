@@ -35,7 +35,8 @@ namespace BankApp.Web.Api
             options.UseSqlServer(Configuration.GetConnectionString("Laptop")));
 
             services.AddDbContext<ApplicationDbContext>(options => 
-            options.UseSqlServer(Configuration.GetConnectionString("Authentication")));
+            options.UseSqlServer(Configuration.GetConnectionString("Authentication"), 
+            m=> m.MigrationsAssembly("BankApp.Domain")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

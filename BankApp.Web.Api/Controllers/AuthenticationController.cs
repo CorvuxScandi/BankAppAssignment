@@ -1,5 +1,6 @@
 ﻿using BankApp.Domain.DomainModels;
 using BankApp.Domain.IdentityModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace BankApp.Web.Api.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -68,6 +70,7 @@ namespace BankApp.Web.Api.Controllers
             return Unauthorized();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)

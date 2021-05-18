@@ -1,6 +1,7 @@
 ﻿using BankApp.Application.ApiModels;
 using BankApp.Application.Interfaces;
 using BankApp.Domain.DomainModels;
+using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
 using Microsoft.AspNetCore.Identity;
@@ -14,12 +15,21 @@ namespace BankApp.Application.Services
 {
     public class AdminServices : IAdminService
     {
+
+        #region classStart
         private IRepository<Account> _accountRepo;
         private IRepository<AccountType> _TypeRepo;
         private IRepository<Card> _cardRepo;
         private IRepository<Customer> _customerRepo;
         private IRepository<Disposition> _dispositionRepo;
         private IRepository<Loan> _loanRepo;
+
+        private  UserManager<ApplicationUser> _userManager;
+
+        public AdminServices(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
 
         public AdminServices(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo, IRepository<Card> cardRepo,
@@ -33,6 +43,7 @@ namespace BankApp.Application.Services
             _dispositionRepo = dispositionRepo;
             _loanRepo = loanRepo;
         }
+        #endregion
 
         public ApplicationResponce AddAccountType(AccountType accountType)
         {
@@ -54,8 +65,26 @@ namespace BankApp.Application.Services
             }
         }
 
-        public ApplicationResponce AddNewCustomerProfile(BankCustomerModel model, IdentityUser identity)
+        public async Task<ApplicationResponce> AddNewCustomerProfile(BankCustomerModel model, RegisterModel registerModel)
         {
+            var userExists = await _userManager.FindByNameAsync(registerModel.Username);
+            if (userExists != null)
+                return new()
+                {
+                    ResponceCode = 409,
+                    ResponceText = "User alredy exists"
+                };
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = registerModel.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = registerModel.Username
+            };
+            var result = await _userManager.CreateAsync(user, registerModel.Password);
+            if (!result.Succeeded) return new() { ResponceCode = 400, ResponceText = "Server error creating new user" };
+
+            model.AccountHolder.ApplicationUserId = user.Id;
             _customerRepo.Create(model.AccountHolder);
             if (_customerRepo.Save() < 0) return new() { ResponceCode = 500 };
 
@@ -85,12 +114,12 @@ namespace BankApp.Application.Services
             throw new NotImplementedException();
         }
 
-        public ApplicationResponce GetCustomerProfile(BankCustomerModel customerModel)
+        public ApplicationResponce GetCustomerProfile(int id)
         {
             throw new NotImplementedException();
         }
 
-        public ApplicationResponce UpdateCustomerProfile(BankCustomerModel customerModel, IdentityUser identity)
+        public async Task<ApplicationResponce> UpdateCustomerProfile(BankCustomerModel customer, RegisterModel registerModel)
         {
             throw new NotImplementedException();
         }
