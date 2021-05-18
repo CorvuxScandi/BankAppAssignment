@@ -1,4 +1,5 @@
 ﻿using BankApp.Data.Contexts;
+using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ namespace BankApp.Data.Reposetories
 {
     internal class IdentityRepository : IRepository<ApplicationUser>
     {
-        private IdentityDbContext _context;
+        private ApplicationDbContext _context;
 
-        public IdentityRepository(IdentityDbContext context)
+        public IdentityRepository(ApplicationDbContext context)
         {
             _context = context;
         }

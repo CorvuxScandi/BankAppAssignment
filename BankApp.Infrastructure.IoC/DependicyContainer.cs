@@ -12,7 +12,6 @@ namespace BankApp.Infrastructure.IoC
         {
             services.AddScoped<ICustomerService, CustomerService>();
 
-            services.AddScoped<IAccountRepository, AccountRepository>();
         }
     }
 }

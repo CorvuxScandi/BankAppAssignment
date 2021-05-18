@@ -1,5 +1,7 @@
 using BankApp.Data.Contexts;
+using BankApp.Domain.IdentityModels;
 using BankApp.Infrastructure.IoC;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -7,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-
+using System.Text;
 
 namespace BankApp.Web.Api
 {
@@ -26,14 +28,47 @@ namespace BankApp.Web.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddMvc();
 
-            services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Laptop"),
-                x=> x.MigrationsAssembly("BankApp.Data")));
+            services.AddDbContext<BankAppDataContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("Laptop")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityDbContext>().AddDefaultTokenProviders();
+            services.AddDbContext<ApplicationDbContext>(options => 
+            options.UseSqlServer(Configuration.GetConnectionString("Authentication")));
 
-            services.AddControllers();
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme =
+                  JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters =
+                    new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidAudience = Configuration
+                    ["JWT: ValidAudience"],
+                        ValidIssuer = Configuration
+                    ["JWT:ValidIssuer"],
+                        IssuerSigningKey =
+                        new SymmetricSecurityKey
+                    (Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                    };
+                });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BankApp.Web.Api", Version = "v1" });
@@ -54,6 +89,7 @@ namespace BankApp.Web.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
