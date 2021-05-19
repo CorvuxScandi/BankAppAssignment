@@ -1,4 +1,5 @@
-﻿using BankApp.Domain.Models;
+﻿using BankApp.Domain.IdentityModels;
+using BankApp.Domain.Models;
 using System.Collections.Generic;
 
 namespace BankApp.Application.ApiModels
@@ -15,5 +16,6 @@ namespace BankApp.Application.ApiModels
 
         public List<Transaction> AccountTransactions { get; set; }
 
+        public RegisterModel RegisterModel { get; set; }
     }
 }

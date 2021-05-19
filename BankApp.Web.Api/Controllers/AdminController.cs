@@ -1,17 +1,14 @@
-﻿using BankApp.Application.Interfaces;
-using BankApp.Domain.IdentityModels;
-using Microsoft.AspNetCore.Authorization;
+﻿using BankApp.Application.ApiModels;
+using BankApp.Application.Interfaces;
+using BankApp.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BankApp.Web.Api.Controllers
 {
-    [Authorize(Roles = UserRoles.Admin)]
+    // [Authorize(Roles = UserRoles.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -25,34 +22,55 @@ namespace BankApp.Web.Api.Controllers
 
         // GET: api/<AdminController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get(string collection)
         {
-            return new string[] { "value1", "value2" };
+            if(collection.ToLower() == "accounts")
+            {
+                var result = _admincervice.GetAccounts();
+                if (result != null) return Ok(result);
+                
+            }
+            if(collection.ToLower() == "costumers")
+            {
+                var result =  _admincervice.GetCostummers();
+                if (result != null) return Ok(result);
+                
+            }
+            if(collection.ToLower() == "test")
+            {
+                return Ok("test");
+            }
+            return NotFound();
+
         }
 
-        // GET api/<AdminController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [Route("test")]
+        public IActionResult Get()
         {
-            return "value";
+            return Ok("test");
         }
-
         // POST api/<AdminController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Route("newloan")]
+        public IActionResult NewLoan([FromBody] Loan loan)
         {
-        }
+            if(loan != null)
+            {
+                var result = _admincervice.AddLoan(loan);
+                if (result.ResponceCode < 300) return Ok();
 
-        // PUT api/<AdminController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
+            }
+            return BadRequest();
         }
-
-        // DELETE api/<AdminController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        
+        [HttpPost]
+        [Route("newcostumer")]
+        public async Task<IActionResult> NewCostumer([FromBody] BankCustomerModel customerModel)
         {
+            var result = await _admincervice.AddNewCustomerProfile(customerModel);
+
+            if(result.ResponceCode <300) return Ok();
+            return BadRequest();
         }
     }
 }

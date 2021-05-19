@@ -32,8 +32,8 @@ namespace BankApp.Web.Api.Controllers
         }
 
         // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult> Get()
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
             var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Name");
 

@@ -2,24 +2,24 @@
 using BankApp.Domain.DomainModels;
 using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BankApp.Application.Interfaces
 {
     public interface IAdminService
     {
-
-
         ApplicationResponce AddAccountType(AccountType accountType);
 
-        Task<ApplicationResponce> AddNewCustomerProfile(BankCustomerModel customerModel, RegisterModel registerModel);
+        List<Customer> GetCostummers();
+
+        List<Account> GetAccounts();
+
+        ApplicationResponce AddLoan(Loan loan);
+
+        Task<ApplicationResponce> AddNewCustomerProfile(BankCustomerModel customerModel);
 
         Task<ApplicationResponce> UpdateUserLogin(Customer customer, RegisterModel registerModel);
 
-        ApplicationResponce FreezeAccount(BankCustomerModel account);
-
-        ApplicationResponce FreezeCustomer(Customer customer);
-
-        ApplicationResponce GetCustomerProfile(int id);
     }
 }

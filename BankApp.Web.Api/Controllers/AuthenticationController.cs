@@ -69,7 +69,11 @@ namespace BankApp.Web.Api.Controllers
             }
             return Unauthorized();
         }
-
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok("Hello world");
+        }
         //[Authorize(Roles = "Admin")]
         //[HttpPost]
         //[Route("register")]
