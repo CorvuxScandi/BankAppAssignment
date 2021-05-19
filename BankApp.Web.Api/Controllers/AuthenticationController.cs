@@ -70,27 +70,28 @@ namespace BankApp.Web.Api.Controllers
             return Unauthorized();
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
-        {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ApplicationResponce { ResponceCode = 409, ResponceText = "User already exists!" });
+        //[Authorize(Roles = "Admin")]
+        //[HttpPost]
+        //[Route("register")]
+        //public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        //{
+        //    var userExists = await _userManager.FindByNameAsync(model.Username);
+        //    if (userExists != null)
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new ApplicationResponce { ResponceCode = 409, ResponceText = "User already exists!" });
 
-            ApplicationUser user = new ApplicationUser()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ApplicationResponce { ResponceCode= 400, ResponceText = "User creation failed! Please check user details and try again." });
+        //    ApplicationUser user = new ApplicationUser()
+        //    {
+        //        Email = model.Email,
+        //        SecurityStamp = Guid.NewGuid().ToString(),
+        //        UserName = model.Username
+        //    };
+        //    var result = await _userManager.CreateAsync(user, model.Password);
+        //    if (!result.Succeeded)
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new ApplicationResponce { ResponceCode= 400, ResponceText = "User creation failed! Please check user details and try again." });
 
-            return Ok(new ApplicationResponce { ResponceCode = 201, ResponceText = "User created successfully!" });
-        }
+        //    return Ok(new ApplicationResponce { ResponceCode = 201, ResponceText = "User created successfully!" });
+        //}
+
         [HttpPost]
         [Route("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)

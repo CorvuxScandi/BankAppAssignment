@@ -14,7 +14,7 @@ namespace BankApp.Application.Interfaces
 
         Task<ApplicationResponce> AddNewCustomerProfile(BankCustomerModel customerModel, RegisterModel registerModel);
 
-        Task<ApplicationResponce> UpdateCustomerProfile(BankCustomerModel customerModel, RegisterModel registerModel);
+        Task<ApplicationResponce> UpdateUserLogin(Customer customer, RegisterModel registerModel);
 
         ApplicationResponce FreezeAccount(BankCustomerModel account);
 

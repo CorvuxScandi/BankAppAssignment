@@ -58,7 +58,7 @@ namespace BankApp.Application.Services
             };
         }
 
-        public ApplicationResponce FindCustomerIdentity(string id)
+        public ApplicationResponce GetAccountInfo(string id)
         {
             var customer = _customerRepo.GetAll().FirstOrDefault(c => c.ApplicationUserId == id);
             if (customer == null)
@@ -69,12 +69,7 @@ namespace BankApp.Application.Services
                     ResponceText = "Customer not found"
                 };
             }
-            return new() { ResponceCode = 200, ResponceBody = customer };
-        }
 
-        public ApplicationResponce GetAccountInfo(Customer customer)
-        {
-            
             var CustomerDispositions =
                 _dispositionRepo
                 .GetAll()
@@ -103,6 +98,7 @@ namespace BankApp.Application.Services
 
         public ApplicationResponce GetTransactions(int accountId)
         {
+
             if (_accountRepo.GetById(accountId) == null)
             {
                 return new()

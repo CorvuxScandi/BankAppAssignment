@@ -119,9 +119,15 @@ namespace BankApp.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ApplicationResponce> UpdateCustomerProfile(BankCustomerModel customer, RegisterModel registerModel)
+        public async Task<ApplicationResponce> UpdateUserLogin(Customer costumer, RegisterModel registerModel)
         {
-            throw new NotImplementedException();
+            var user = _userManager.FindByIdAsync(costumer.ApplicationUserId).Result;
+            user.UserName = registerModel.Username;
+            user.Email = registerModel.Email;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded) return new() { ResponceCode = 200 };
+            return new() { ResponceCode = 400, ResponceText="Unexpected server error" };
         }
     }
 }

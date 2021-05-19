@@ -33,7 +33,7 @@ namespace BankApp.Web.Api.Controllers
 
         // GET api/<ValuesController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult> Get(int id)
+        public async Task<ActionResult> Get()
         {
             var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Name");
 
@@ -48,20 +48,12 @@ namespace BankApp.Web.Api.Controllers
 
         // POST api/<ValuesController>
         [HttpPost]
-        public void Post([FromBody] Transaction transaction)
+        public IActionResult Post([FromBody] Transaction transaction)
         {
+           var result = _customerService.Addtransaction(transaction);
+            if (result.ResponceCode < 300) return Ok();
+            return BadRequest();
         }
 
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
