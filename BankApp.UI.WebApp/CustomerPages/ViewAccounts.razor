@@ -1,11 +1,25 @@
-﻿
+﻿@using BankApp.Application.ApiModels
+@inject HttpClient Http
 
-<h3>ViewAccounts</h3>
+<h3>Välkommen @customerModel.AccountHolder.Givenname</h3>
 <div class="container">
     <ol class="">
-        
+        @foreach (var account in customerModel.Accounts)
+        {
+            <li>@account.AccountId : @account.Balance</li>
+        }
     </ol>
 </div>
+
 @code {
+    private BankCustomerModel customerModel;
+
+    protected override async Task OnInitializedAsync() =>
+        
+            customerModel = await Http.GetFromJsonAsync<BankCustomerModel>("api/customer");
+
+
+
+
 
 }
