@@ -7,7 +7,7 @@
 <AuthorizeView>
     <Authorized>
         Hello, @context.User.Identity.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <button class="nav-link btn btn-link">Log out</button>
     </Authorized>
     <NotAuthorized>
         <a href="authentication/login">Log in</a>
@@ -15,9 +15,18 @@
 </AuthorizeView>
 
 @code{
-    private async Task BeginSignOut(MouseEventArgs args)
-    {
-        await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
-    }
+
+    //[CascadingParameter]
+    //private Task<AuthenticationState> authentication { get; set; };
+
+    //private IList<Claim> userClaim { get; set; } = new List<Claim>() { };
+
+    //private void Login()
+    //{
+
+    //}
+    //private void Logout()
+    //{
+
+    //}
 }

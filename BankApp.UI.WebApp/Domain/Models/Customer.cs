@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BankApp.Domain.IdentityModels;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace BankApp.Domain.Models

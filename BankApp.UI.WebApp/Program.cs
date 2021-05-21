@@ -1,12 +1,9 @@
-using BankApp.UI.WebApp.Services;
+using BankApp.UI.WebApp.JwtAuthentication.AuthenticationServices;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BankApp.UI.WebApp
@@ -18,15 +15,17 @@ namespace BankApp.UI.WebApp
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+
+
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddApiAuthorization();
-            //builder.Services.AddOidcAuthentication(options =>
-            //{
-            //    // Configure your authentication provider options here.
-            //    // For more information, see https://aka.ms/blazor-standalone-auth
-            //    builder.Configuration.Bind("Local", options.ProviderOptions);
-            //});
+            #region Authentication
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationProvider>();
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            #endregion
+
+
             await builder.Build().RunAsync();
         }
     }
