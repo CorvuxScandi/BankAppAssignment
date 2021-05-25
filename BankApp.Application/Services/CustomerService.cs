@@ -1,8 +1,11 @@
-﻿using BankApp.Application.ApiModels;
+﻿using AutoMapper;
+using BankApp.Application.ApiModels;
 using BankApp.Application.Interfaces;
+using BankApp.Application.Tools;
 using BankApp.Domain.DomainModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +20,7 @@ namespace BankApp.Application.Services
         public IRepository<Disposition> _dispositionRepo;
         public IRepository<Loan> _loanRepo;
         public IRepository<Transaction> _transactionRepo;
+        private readonly IMapper _mapper;
 
         public CustomerService(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo,
@@ -24,7 +28,8 @@ namespace BankApp.Application.Services
             IRepository<Customer> customerRepo,
             IRepository<Disposition> dispositionRepo,
             IRepository<Loan> loanRepo,
-            IRepository<Transaction> transactionRepo)
+            IRepository<Transaction> transactionRepo,
+            IMapper mapper)
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -33,6 +38,7 @@ namespace BankApp.Application.Services
             _dispositionRepo = dispositionRepo;
             _loanRepo = loanRepo;
             _transactionRepo = transactionRepo;
+            _mapper = mapper;
         }
 
         public ApplicationResponce Addtransaction(Transaction transaction)
@@ -60,8 +66,9 @@ namespace BankApp.Application.Services
 
         public ApplicationResponce GetAccountInfo(string id)
         {
-            var customer = _customerRepo.GetAll().FirstOrDefault(c => c.ApplicationUserId == id);
-            if (customer == null)
+
+            var customerID = FindCustomerIdWithUserId(id);
+            if (customerID == 0)
             {
                 return new()
                 {
@@ -70,23 +77,36 @@ namespace BankApp.Application.Services
                 };
             }
 
+            var customer = _customerRepo.GetById(customerID);
+
             var CustomerDispositions =
                 _dispositionRepo
                 .GetAll()
-                .Where(x => x.CustomerId == customer.CustomerId);
+                .Where(x => x.CustomerId == customerID);
 
-            BankCustomerModel bankCustomer = new();
-
-            bankCustomer.AccountHolder = customer;
+            CustomerDetails bankCustomer = new()
+            {
+                CustomerInfo = CustomMapper.MapDTO<Customer, CustomerDTO>(customer)
+            };
 
             foreach (var item in CustomerDispositions)
             {
                 bankCustomer.Accounts
-                    .Add(item.Account);
-                bankCustomer.ConnectedCards
-                    .AddRange(item.Cards);
+                    .Add(CustomMapper.MapDTO<Account, AccountDTO>(item.Account));
+                List<CardDTO> cards = new();
+                foreach (var card in item.Cards)
+                {
+                    cards.Add(CustomMapper.MapDTO<Card, CardDTO>(card));
+                };
+                bankCustomer.Cards
+                    .AddRange(cards);
+                List<LoanDTO> loans = new();
+                foreach (var loan in item.Account.Loans)
+                {
+                    loans.Add(CustomMapper.MapDTO<Loan, LoanDTO>(loan));
+                }
                 bankCustomer.Loans
-                    .AddRange(item.Account.Loans);
+                    .AddRange(loans);
             }
 
             return new()
@@ -113,6 +133,13 @@ namespace BankApp.Application.Services
                 ResponceCode = 200,
                 ResponceBody = _accountRepo.GetById(accountId).Transactions.ToList()
             };
+        }
+
+        private int FindCustomerIdWithUserId(string id)
+        {
+            var result = _customerRepo.GetAll().FirstOrDefault(c => c.ApplicationUserId == id);
+            if (result == null) return 0;
+            return result.CustomerId;
         }
     }
 }

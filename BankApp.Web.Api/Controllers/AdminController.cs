@@ -1,14 +1,14 @@
 ﻿using BankApp.Application.ApiModels;
 using BankApp.Application.Interfaces;
+using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace BankApp.Web.Api.Controllers
 {
-    // [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Roles = UserRoles.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase

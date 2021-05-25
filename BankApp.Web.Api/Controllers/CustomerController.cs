@@ -45,6 +45,18 @@ namespace BankApp.Web.Api.Controllers
             if (responce.ResponceCode < 300) return Ok(customerInfo);
             return BadRequest();
         }
+        [HttpGet]
+        public async Task<IActionResult> GetTransactions(int accountId)
+        {
+            var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Name");
+            var x = await _userManager.FindByNameAsync(currentUser.Value);
+
+            var responce = _customerService.GetTransactions(accountId);
+
+            if (responce.ResponceCode < 300) return Ok(responce.ResponceBody);
+            return BadRequest();
+
+        }
 
         // POST api/<ValuesController>
         [HttpPost]

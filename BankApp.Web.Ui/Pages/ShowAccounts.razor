@@ -1,0 +1,17 @@
+﻿@page "/your-accounts"
+@attribute [Authorize(Roles ="User")]
+
+<AuthorizeView Roles="User">
+
+
+</AuthorizeView>
+
+
+@code {     
+    
+    protected override Task OnInitializedAsync()
+        {
+            
+        }
+
+}
