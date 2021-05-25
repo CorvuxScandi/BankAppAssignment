@@ -56,4 +56,13 @@ namespace BankApp.Application.ApiModels
         public decimal Payments { get; set; }
         public string Status { get; set; }
     }
+    public class TransferDTO
+    {
+        public DateTime Date { get; set; }
+        public string Type { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Balance { get; set; }
+        public string Bank { get; set; }
+        public string Account { get; set; }
+    }
 }

@@ -11,6 +11,6 @@ namespace BankApp.Application.Interfaces
 
         ApplicationResponce Addtransaction(Transaction transaction);
 
-        ApplicationResponce GetTransactions(string authId);
+        ApplicationResponce GetTransactions(int accountId);
     }
 }

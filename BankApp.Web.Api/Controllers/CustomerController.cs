@@ -46,12 +46,10 @@ namespace BankApp.Web.Api.Controllers
             return BadRequest();
         }
         [HttpGet]
-        public async Task<IActionResult> GetTransactions(int accountId)
+        public IActionResult GetTransactions(int accountid)
         {
-            var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Name");
-            var x = await _userManager.FindByNameAsync(currentUser.Value);
 
-            var responce = _customerService.GetTransactions(accountId);
+            var responce = _customerService.GetTransactions(accountid);
 
             if (responce.ResponceCode < 300) return Ok(responce.ResponceBody);
             return BadRequest();

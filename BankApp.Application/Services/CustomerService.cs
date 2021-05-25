@@ -113,11 +113,16 @@ namespace BankApp.Application.Services
             };
         }
 
-        public ApplicationResponce GetTransactions(string authId)
+        public ApplicationResponce GetTransactions(int accountId)
         {
-            int intId = FindCustomerIdWithUserId(authId);
-            var account = _accountRepo.GetById(intId);
+            var account = _accountRepo.GetById(accountId);
+            List<TransferDTO> transactions = new();
 
+            foreach (var transfer in account.Transactions)
+            {
+                transactions.Add(CustomMapper.MapDTO<Transaction, TransferDTO>(transfer));
+            }
+            
             if (account == null)
             {
                 return new()
@@ -130,7 +135,7 @@ namespace BankApp.Application.Services
             return new()
             {
                 ResponceCode = 200,
-                ResponceBody = account.Transactions.ToList()
+                ResponceBody = transactions
             };
         }
 

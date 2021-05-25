@@ -1,17 +1,63 @@
 ﻿@page "/your-accounts"
+@inject HttpClient _client
 @attribute [Authorize(Roles ="User")]
 
 <AuthorizeView Roles="User">
-
-
+    <div>
+        <p>Välkommen @details.CustomerInfo.Givenname @details.CustomerInfo.Surname</p>
+    </div>
+    <div>
+        <p>Dina konton</p>
+        <ul>
+            @foreach (var acc in details.Accounts)
+            {
+                <li>
+                    <div class="card">
+                        <div class="card-header"><h6>KontoNr: @acc.id </h6></div>
+                        <div class="card-body">
+                            <ol>
+                                <li>
+                                    <p>Balans: @acc.Balance</p>
+                                </li>
+                                <li>
+                                    <p>Skapat: @acc.Created</p>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="card-footer">
+                            <button>Se kontots transaktioner</button>
+                            <button>Gör en transaktion</button>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div>
+        <p>Dina kort</p>
+        <ol class="card-deck">
+            @foreach (var card in details.Cards)
+            {
+                <li class="card">
+                    <ol class="card-body">
+                        <li>@card.Ccnumber</li>
+                        <li>@card.Cctype</li>
+                        <li>@card.Issued</li>
+                        <li>@card.ExpM/@card.ExpY @card.Cvv2</li>
+                    </ol>
+                </li>
+            }
+        </ol>
+    </div>
 </AuthorizeView>
 
 
 @code {     
-    
-    protected override Task OnInitializedAsync()
-        {
-            
-        }
+    private CustomerDetails details;
+
+    protected override async Task OnInitializedAsync()
+    {
+        details = await _client.GetFromJsonAsync<CustomerDetails>(_client.BaseAddress + "api/customer");
+    }
 
 }

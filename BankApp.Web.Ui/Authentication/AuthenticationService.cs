@@ -32,7 +32,7 @@ namespace BankApp.Web.Ui.Authentication
                 new KeyValuePair<string, string>("password", authenticationModel.Password)
             });
 
-            var authResult = await _client.PostAsync(_client.BaseAddress + "/authentication", data);
+            var authResult = await _client.PostAsync(_client.BaseAddress + "api/authentication", data);
             var authContent = await authResult.Content.ReadAsStringAsync();
 
             if (authResult.IsSuccessStatusCode == false)
