@@ -7,10 +7,10 @@ namespace BankApp.Application.Interfaces
 {
     public interface ICustomerService
     {
-        ApplicationResponce GetAccountInfo(string id);
+        ApplicationResponce GetAccountInfo(string authId);
 
         ApplicationResponce Addtransaction(Transaction transaction);
 
-        ApplicationResponce GetTransactions(int accountId);
+        ApplicationResponce GetTransactions(string authId);
     }
 }

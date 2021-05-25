@@ -20,7 +20,6 @@ namespace BankApp.Application.Services
         public IRepository<Disposition> _dispositionRepo;
         public IRepository<Loan> _loanRepo;
         public IRepository<Transaction> _transactionRepo;
-        private readonly IMapper _mapper;
 
         public CustomerService(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo,
@@ -28,8 +27,8 @@ namespace BankApp.Application.Services
             IRepository<Customer> customerRepo,
             IRepository<Disposition> dispositionRepo,
             IRepository<Loan> loanRepo,
-            IRepository<Transaction> transactionRepo,
-            IMapper mapper)
+            IRepository<Transaction> transactionRepo
+            )
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -38,7 +37,6 @@ namespace BankApp.Application.Services
             _dispositionRepo = dispositionRepo;
             _loanRepo = loanRepo;
             _transactionRepo = transactionRepo;
-            _mapper = mapper;
         }
 
         public ApplicationResponce Addtransaction(Transaction transaction)
@@ -64,10 +62,10 @@ namespace BankApp.Application.Services
             };
         }
 
-        public ApplicationResponce GetAccountInfo(string id)
+        public ApplicationResponce GetAccountInfo(string authId)
         {
 
-            var customerID = FindCustomerIdWithUserId(id);
+            var customerID = FindCustomerIdWithUserId(authId);
             if (customerID == 0)
             {
                 return new()
@@ -91,22 +89,21 @@ namespace BankApp.Application.Services
 
             foreach (var item in CustomerDispositions)
             {
+                //Mapps customer into API model
                 bankCustomer.Accounts
                     .Add(CustomMapper.MapDTO<Account, AccountDTO>(item.Account));
-                List<CardDTO> cards = new();
+
+                //Mapps each card that the customer posesses into the API model
                 foreach (var card in item.Cards)
                 {
-                    cards.Add(CustomMapper.MapDTO<Card, CardDTO>(card));
+                    bankCustomer.Cards.Add(CustomMapper.MapDTO<Card, CardDTO>(card));
                 };
-                bankCustomer.Cards
-                    .AddRange(cards);
-                List<LoanDTO> loans = new();
+
+                //Mapps all loans the customer have into the API model
                 foreach (var loan in item.Account.Loans)
                 {
-                    loans.Add(CustomMapper.MapDTO<Loan, LoanDTO>(loan));
+                    bankCustomer.Loans.Add(CustomMapper.MapDTO<Loan, LoanDTO>(loan));
                 }
-                bankCustomer.Loans
-                    .AddRange(loans);
             }
 
             return new()
@@ -116,10 +113,12 @@ namespace BankApp.Application.Services
             };
         }
 
-        public ApplicationResponce GetTransactions(int accountId)
+        public ApplicationResponce GetTransactions(string authId)
         {
+            int intId = FindCustomerIdWithUserId(authId);
+            var account = _accountRepo.GetById(intId);
 
-            if (_accountRepo.GetById(accountId) == null)
+            if (account == null)
             {
                 return new()
                 {
@@ -131,7 +130,7 @@ namespace BankApp.Application.Services
             return new()
             {
                 ResponceCode = 200,
-                ResponceBody = _accountRepo.GetById(accountId).Transactions.ToList()
+                ResponceBody = account.Transactions.ToList()
             };
         }
 
