@@ -20,6 +20,7 @@ namespace BankApp.Web.Ui.Authentication
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
+            _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BankApp.Web.Ui.Models
+namespace BankApp.Web.Api.Models
 {
     public class AuthenticationUserModel
     {
