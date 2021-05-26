@@ -1,5 +1,6 @@
 ﻿using BankApp.Web.Ui.Models;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -11,11 +12,11 @@ namespace BankApp.Web.Ui.Authentication
     public class AuthenticationService : IAuthenticationService
     {
         private readonly HttpClient _client;
-        private readonly AuthStateProvider _authState;
+        private readonly AuthenticationStateProvider _authState;
         private readonly ILocalStorageService _localStorage;
 
         public AuthenticationService(HttpClient client,
-            AuthStateProvider authState,
+            AuthenticationStateProvider authState,
             ILocalStorageService storageService)
         {
             _client = client;

@@ -1,19 +1,20 @@
-﻿@page "/login" 
+﻿@page "/login"
 @inject IAuthenticationService AuthService
 @inject NavigationManager NavMan
+
 
 <div class="card, shadow-sm">
     <div class="card-title card-header">
         <p>Logga in med användarnamn och lösenord</p>
     </div>
-    @if (ShowAuthError) 
-    { 
-    <div class="alert alert-danger" role="alert">
-        <p>@AuthText</p>
-    </div>
+    @if (ShowAuthError)
+    {
+        <div class="alert alert-danger" role="alert">
+            <p>@AuthText</p>
+        </div>
     }
     <div class="card-body">
-        <EditForm Model="model" OnValidSubmit="Authanticate">
+        <EditForm Model="model" OnInvalidSubmit="Authenticate">
             <DataAnnotationsValidator />
             <ValidationSummary />
 
@@ -23,6 +24,7 @@
             <div class="form-group row">
                 <InputText id="password" type="password" class="form-control" @bind-Value="model.Password" DisplayName="Password" />
             </div>
+            <input type="submit" class="btn btn-primary" />
         </EditForm>
     </div>
 </div>
@@ -32,13 +34,13 @@
     private bool ShowAuthError = false;
     private string AuthText = "";
 
-    private async Task Authanticate()
+    private async Task Authenticate()
     {
         ShowAuthError = false;
 
         AuthenticatedUserModel result = await AuthService.Login(model);
 
-        if(result != null)
+        if (result != null)
         {
             NavMan.NavigateTo("/");
         }
@@ -47,6 +49,5 @@
             AuthText = "An error occred while trying to log in";
             ShowAuthError = true;
         }
-    }
-
+    } 
 }

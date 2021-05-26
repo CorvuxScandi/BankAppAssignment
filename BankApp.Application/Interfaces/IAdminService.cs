@@ -11,9 +11,9 @@ namespace BankApp.Application.Interfaces
     {
         ApplicationResponce AddAccountType(AccountType accountType);
 
-        List<Customer> GetCostummers();
+        List<CustomerDTO> GetCostummers();
 
-        List<Account> GetAccounts();
+        List<AccountDTO> GetCustomerAccounts(int id);
 
         ApplicationResponce AddLoan(Loan loan);
 

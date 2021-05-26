@@ -1,8 +1,41 @@
 ﻿@page "/adminview"
-<h3>AdminControllboard</h3>
+@inject HttpClient _client
 <AuthorizeView Roles="Admin">
+    <h3>AdminControllboard</h3>
 
+    <div class="row">
+        <div class="col-auto">
+            <ListAccountsCustomers @bind-value="CustomerList" SelectCustomer="CustomerSelected"/>
+        </div>
+        <div class="col-auto">
+            <AccountList @bind-value="AccountList"/>
+        </div>
+        <div class="col-auto">
+            <LoanGenerator @bind-Value="Loan"/>
+        </div>
+    </div>
 </AuthorizeView>
-@code {
+@code {     
+    List<CustomerDTO> CustomerList = new();
+    List<AccountDTO> AccountList = new();
 
+    CustomerDTO Customer { get; set; }
+    AccountDTO Account { get; set; }
+    LoanDTO Loan { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        CustomerList = await _client.GetFromJsonAsync<List<CustomerDTO>>(_client.BaseAddress + "api/admin");
+    }
+
+    private async void CustomerSelected(int id)
+    {
+        Loan. = CustomerList.First(x => x.id == id);
+        AccountList = await _client.GetFromJsonAsync<List<AccountDTO>>(_client.BaseAddress + "api/admin/" + id);
+    }
+
+    private void AccountSelected(int id)
+    {
+        Account = AccountList.First(a => a.id == id);
+    }
 }

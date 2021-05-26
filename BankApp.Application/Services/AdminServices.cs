@@ -1,5 +1,6 @@
 ﻿using BankApp.Application.ApiModels;
 using BankApp.Application.Interfaces;
+using BankApp.Application.Tools;
 using BankApp.Domain.DomainModels;
 using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Interfaces;
@@ -112,14 +113,27 @@ namespace BankApp.Application.Services
             };
         }
 
-        public List<Account> GetAccounts()
+        public List<AccountDTO> GetCustomerAccounts(int id)
         {
-            return _accountRepo.GetAll().ToList();
+            var dispositions = _dispositionRepo.GetAll().Where(x => x.CustomerId == id);
+            List<AccountDTO> accounts = new();
+            foreach (var dis in dispositions)
+            {
+                accounts.Add(CustomMapper.MapDTO<Account, AccountDTO>(_accountRepo.GetById(dis.AccountId)));
+            }
+            return accounts;
+
         }
 
-        public List<Customer> GetCostummers()
+        public List<CustomerDTO> GetCostummers()
         {
-            return _customerRepo.GetAll().ToList();
+            var result = _customerRepo.GetAll().ToList();
+            List<CustomerDTO> list = new();
+            foreach (var item in result)
+            {
+                list.Add(CustomMapper.MapDTO<Customer, CustomerDTO>(item));
+            }
+            return list;
         }
 
         public ApplicationResponce GetCustomerProfile(int id)
