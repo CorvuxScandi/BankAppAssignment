@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 
-namespace BankApp.Web.Ui.Models
+namespace BankApp.Application.ApiModels
 {
     public class RegisterModel
     {
@@ -27,6 +26,7 @@ namespace BankApp.Web.Ui.Models
         //Account
         public string Frequency { get; set; }
 
+        public int AccountTypesId { get; set; }
         public DateTime Created { get; set; }
         public decimal Balance { get; set; }
     }

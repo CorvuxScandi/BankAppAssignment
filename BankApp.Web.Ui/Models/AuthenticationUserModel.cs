@@ -8,8 +8,8 @@ namespace BankApp.Web.Ui.Models
 {
     public class AuthenticationUserModel
     {
-        [Required(ErrorMessage = "Missing user name")]
-        public string Username { get; set; }
+        [Required(ErrorMessage = "Missing email")]
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "Missing password")]
         public string Password { get; set; }

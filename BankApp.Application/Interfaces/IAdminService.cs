@@ -15,11 +15,10 @@ namespace BankApp.Application.Interfaces
 
         List<AccountDTO> GetCustomerAccounts(int id);
 
-        ApplicationResponce AddLoan(Loan loan);
+        ApplicationResponce AddLoan(LoanDTO loan);
 
-        Task<ApplicationResponce> AddNewCustomerProfile(BankCustomerModel customerModel);
+        Task<ApplicationResponce> AddNewCustomerProfile(RegisterModel customerModel);
 
-        Task<ApplicationResponce> UpdateUserLogin(Customer customer, RegisterModel registerModel);
-
+        Task<ApplicationResponce> UpdateUserLogin(RegisterModel registerModel);
     }
 }

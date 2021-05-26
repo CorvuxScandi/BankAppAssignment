@@ -34,30 +34,30 @@ namespace BankApp.Web.Api.Controllers
         public IActionResult Get(int customerId)
         {
             var accounts = _admincervice.GetCustomerAccounts(customerId);
-            if(accounts != null)return Ok(accounts);
+            if (accounts != null) return Ok(accounts);
             return BadRequest();
         }
+
         // POST api/<AdminController>
         [HttpPost]
         [Route("newloan")]
-        public IActionResult NewLoan([FromBody] Loan loan)
+        public IActionResult NewLoan([FromBody] LoanDTO loan)
         {
-            if(loan != null)
+            if (loan != null)
             {
                 var result = _admincervice.AddLoan(loan);
                 if (result.ResponceCode < 300) return Ok();
-
             }
             return BadRequest();
         }
-        
+
         [HttpPost]
         [Route("newcostumer")]
-        public async Task<IActionResult> NewCostumer([FromBody] BankCustomerModel customerModel)
+        public async Task<IActionResult> NewCostumer([FromBody] RegisterModel customerModel)
         {
             var result = await _admincervice.AddNewCustomerProfile(customerModel);
 
-            if(result.ResponceCode <300) return Ok();
+            if (result.ResponceCode < 300) return Ok();
             return BadRequest();
         }
     }

@@ -1,6 +1,6 @@
 ﻿@page "/your-accounts"
 @inject HttpClient _client
-@attribute [Authorize(Roles ="User")]
+@attribute [Authorize(Roles = "User")]
 
 <AuthorizeView Roles="User">
     <div>
@@ -13,7 +13,10 @@
             {
                 <li>
                     <div class="card">
-                        <div class="card-header"><h6>KontoNr: @acc.id </h6></div>
+                        <div class="card-header">
+                            <h6>KontoNr: @acc.AccountId </h6>
+                            <p>@acc.AccountType</p>
+                        </div>
                         <div class="card-body">
                             <ol>
                                 <li>
@@ -51,8 +54,7 @@
     </div>
 </AuthorizeView>
 
-
-@code {     
+@code {
     private CustomerDetails details;
 
     protected override async Task OnInitializedAsync()

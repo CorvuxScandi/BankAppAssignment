@@ -13,9 +13,10 @@ namespace BankApp.Application.ApiModels
         public List<CardDTO> Cards { get; set; }
         public List<LoanDTO> Loans { get; set; }
     }
+
     public class CustomerDTO
     {
-        public int id { get; set; }
+        public int CustomerId { get; set; }
         public string Gender { get; set; }
         public string Givenname { get; set; }
         public string Surname { get; set; }
@@ -29,16 +30,19 @@ namespace BankApp.Application.ApiModels
         public string Telephonenumber { get; set; }
         public string Emailaddress { get; set; }
     }
+
     public class AccountDTO
     {
-        public int id { get; set; }
+        public int AccountId { get; set; }
         public string Frequency { get; set; }
         public DateTime Created { get; set; }
         public decimal Balance { get; set; }
+        public string AccountType { get; set; }
     }
+
     public class CardDTO
     {
-        public int id { get; set; }
+        public int CardId { get; set; }
         public string Type { get; set; }
         public DateTime Issued { get; set; }
         public string Cctype { get; set; }
@@ -47,19 +51,23 @@ namespace BankApp.Application.ApiModels
         public int ExpM { get; set; }
         public int ExpY { get; set; }
     }
+
     public class LoanDTO
     {
-        public int id { get; set; }
+        public int AccountId { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public int Duration { get; set; }
         public decimal Payments { get; set; }
         public string Status { get; set; }
     }
+
     public class TransferDTO
     {
+        public int AccountId { get; set; }
         public DateTime Date { get; set; }
         public string Type { get; set; }
+        public string Operation { get; set; }
         public decimal Amount { get; set; }
         public decimal Balance { get; set; }
         public string Bank { get; set; }

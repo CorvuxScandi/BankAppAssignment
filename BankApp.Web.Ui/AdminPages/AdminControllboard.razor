@@ -5,17 +5,17 @@
 
     <div class="row">
         <div class="col-auto">
-            <ListAccountsCustomers @bind-value="CustomerList" SelectCustomer="CustomerSelected"/>
+            <ListAccountsCustomers @bind-value="CustomerList" SelectCustomer="CustomerSelected" />
         </div>
         <div class="col-auto">
-            <AccountList @bind-value="AccountList"/>
+            <AccountList @bind-value="AccountList" SelectAccount="AccountSelected" />
         </div>
         <div class="col-auto">
-            <LoanGenerator @bind-Value="Loan"/>
+            <LoanGenerator @bind-Value="Loan" />
         </div>
     </div>
 </AuthorizeView>
-@code {     
+@code {
     List<CustomerDTO> CustomerList = new();
     List<AccountDTO> AccountList = new();
 
@@ -30,12 +30,14 @@
 
     private async void CustomerSelected(int id)
     {
-        Loan. = CustomerList.First(x => x.id == id);
+        Customer = CustomerList.First(x => x.CustomerId == id);
         AccountList = await _client.GetFromJsonAsync<List<AccountDTO>>(_client.BaseAddress + "api/admin/" + id);
+
     }
 
     private void AccountSelected(int id)
     {
-        Account = AccountList.First(a => a.id == id);
+        Loan.AccountId = id;
+
     }
 }

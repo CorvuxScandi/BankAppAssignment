@@ -2,10 +2,9 @@
 @inject IAuthenticationService AuthService
 @inject NavigationManager NavMan
 
-
 <div class="card, shadow-sm">
     <div class="card-title card-header">
-        <p>Logga in med användarnamn och lösenord</p>
+        <p>Logga in med din Email och lösenord</p>
     </div>
     @if (ShowAuthError)
     {
@@ -49,5 +48,5 @@
             AuthText = "An error occred while trying to log in";
             ShowAuthError = true;
         }
-    } 
+    }
 }

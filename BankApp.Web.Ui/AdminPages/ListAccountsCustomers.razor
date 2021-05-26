@@ -5,7 +5,7 @@
     <NavLink class="btn btn-dark" href="register">Add new customer</NavLink>
 </div>
 <div class="row">
-    <InputText DisplayName="Search customers" ValueChanged="@Search" Value=""/>
+    <InputText DisplayName="Search customers" ValueChanged="@Search" Value="" />
 </div>
 <div class="row">
     <ol class="card-deck">
@@ -28,7 +28,7 @@
                     <p>@item.CountryCode @item.Country</p>
                 </div>
                 <div class="card-footer">
-                    <button @onclick="@(() => SelectCustomer.InvokeAsync(item.id))">
+                    <button @onclick="@(() => SelectCustomer.InvokeAsync(item.CustomerId))">
                         Show accounts
                     </button>
                 </div>
@@ -46,10 +46,9 @@
     private List<CustomerDTO> CustomersRed { get; set; }
     private string searchText { get; set; } = "";
 
-
     private void Search()
     {
-        if(searchText == "") CustomersRed = CustomersOrg;
+        if (searchText == "") CustomersRed = CustomersOrg;
 
         CustomersRed = CustomersOrg.FindAll(x => x.Givenname.Contains(searchText) && x.Surname.Contains(searchText));
     }

@@ -1,9 +1,23 @@
 ﻿@inject HttpClient _client
-@code {     
-    private List<AccountDTO> accList = new();
 
-    protected override Task OnInitializedAsync()
-    {
+<div class="card">
+    <ul class="card-body">
+        @foreach (var acc in accList)
+        {
+            <li>
+                <p>@acc.AccountId</p>
+                <p>@acc.Frequency</p>
+                <p>@acc.Balance</p>
+                <button @onclick="@(() => SelectAccount.InvokeAsync(acc.AccountId))">Add account<i class="bi bi-arrow-right"></i></button>
+            </li>
+        }
+    </ul>
+</div>
 
-    }
+@code {
+    [Parameter]
+    public EventCallback<int> SelectAccount { get; set; }
+    [Parameter]
+    public List<AccountDTO> accList { get; set; }
+
 }

@@ -1,5 +1,26 @@
-﻿<h3>LoanGenerator</h3>
+﻿@inject HttpClient client
+
+<EditForm Model="Loan" OnValidSubmit="GrantLoan">
+
+    <p id="account-id" class="form-control">@Loan.AccountId</p>
+    <InputNumber id="amount" class="form-control" @bind-Value="Loan.Amount" />
+    <InputNumber id="duration" class="form-control" @bind-Value="Loan.Duration" />
+    <input type="submit" class="btn btn-primary" />
+</EditForm>
 
 @code {
+    [Parameter]
+    public LoanDTO Loan { get; set; }
 
+    private async void GrantLoan()
+    {
+        Loan.Date = DateTime.Now;
+        Loan.Status = "Running";
+        Loan.Payments = 0;
+
+        await client.PostAsJsonAsync("api/admin/newloan", Loan);
+
+        var account
+
+    }
 }
