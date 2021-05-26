@@ -45,6 +45,16 @@ namespace BankApp.Web.Api.Controllers
             if (responce.ResponceCode < 300) return Ok(customerInfo);
             return BadRequest();
         }
+        [HttpGet]
+        public IActionResult GetTransactions(int accountid)
+        {
+
+            var responce = _customerService.GetTransactions(accountid);
+
+            if (responce.ResponceCode < 300) return Ok(responce.ResponceBody);
+            return BadRequest();
+
+        }
 
         // POST api/<ValuesController>
         [HttpPost]

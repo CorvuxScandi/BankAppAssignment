@@ -1,8 +1,11 @@
-﻿using BankApp.Application.ApiModels;
+﻿using AutoMapper;
+using BankApp.Application.ApiModels;
 using BankApp.Application.Interfaces;
+using BankApp.Application.Tools;
 using BankApp.Domain.DomainModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,7 +27,8 @@ namespace BankApp.Application.Services
             IRepository<Customer> customerRepo,
             IRepository<Disposition> dispositionRepo,
             IRepository<Loan> loanRepo,
-            IRepository<Transaction> transactionRepo)
+            IRepository<Transaction> transactionRepo
+            )
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -58,10 +62,11 @@ namespace BankApp.Application.Services
             };
         }
 
-        public ApplicationResponce GetAccountInfo(string id)
+        public ApplicationResponce GetAccountInfo(string authId)
         {
-            var customer = _customerRepo.GetAll().FirstOrDefault(c => c.ApplicationUserId == id);
-            if (customer == null)
+
+            var customerID = FindCustomerIdWithUserId(authId);
+            if (customerID == 0)
             {
                 return new()
                 {
@@ -70,23 +75,35 @@ namespace BankApp.Application.Services
                 };
             }
 
+            var customer = _customerRepo.GetById(customerID);
+
             var CustomerDispositions =
                 _dispositionRepo
                 .GetAll()
-                .Where(x => x.CustomerId == customer.CustomerId);
+                .Where(x => x.CustomerId == customerID);
 
-            BankCustomerModel bankCustomer = new();
-
-            bankCustomer.AccountHolder = customer;
+            CustomerDetails bankCustomer = new()
+            {
+                CustomerInfo = CustomMapper.MapDTO<Customer, CustomerDTO>(customer)
+            };
 
             foreach (var item in CustomerDispositions)
             {
+                //Mapps customer into API model
                 bankCustomer.Accounts
-                    .Add(item.Account);
-                bankCustomer.ConnectedCards
-                    .AddRange(item.Cards);
-                bankCustomer.Loans
-                    .AddRange(item.Account.Loans);
+                    .Add(CustomMapper.MapDTO<Account, AccountDTO>(item.Account));
+
+                //Mapps each card that the customer posesses into the API model
+                foreach (var card in item.Cards)
+                {
+                    bankCustomer.Cards.Add(CustomMapper.MapDTO<Card, CardDTO>(card));
+                };
+
+                //Mapps all loans the customer have into the API model
+                foreach (var loan in item.Account.Loans)
+                {
+                    bankCustomer.Loans.Add(CustomMapper.MapDTO<Loan, LoanDTO>(loan));
+                }
             }
 
             return new()
@@ -98,8 +115,15 @@ namespace BankApp.Application.Services
 
         public ApplicationResponce GetTransactions(int accountId)
         {
+            var account = _accountRepo.GetById(accountId);
+            List<TransferDTO> transactions = new();
 
-            if (_accountRepo.GetById(accountId) == null)
+            foreach (var transfer in account.Transactions)
+            {
+                transactions.Add(CustomMapper.MapDTO<Transaction, TransferDTO>(transfer));
+            }
+            
+            if (account == null)
             {
                 return new()
                 {
@@ -111,8 +135,15 @@ namespace BankApp.Application.Services
             return new()
             {
                 ResponceCode = 200,
-                ResponceBody = _accountRepo.GetById(accountId).Transactions.ToList()
+                ResponceBody = transactions
             };
+        }
+
+        private int FindCustomerIdWithUserId(string id)
+        {
+            var result = _customerRepo.GetAll().FirstOrDefault(c => c.ApplicationUserId == id);
+            if (result == null) return 0;
+            return result.CustomerId;
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using BankApp.Application.ApiModels;
 using BankApp.Application.Interfaces;
+using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace BankApp.Web.Api.Controllers
 {
-    // [Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Roles = UserRoles.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -22,32 +22,20 @@ namespace BankApp.Web.Api.Controllers
 
         // GET: api/<AdminController>
         [HttpGet]
-        public IActionResult Get(string collection)
-        {
-            if(collection.ToLower() == "accounts")
-            {
-                var result = _admincervice.GetAccounts();
-                if (result != null) return Ok(result);
-                
-            }
-            if(collection.ToLower() == "costumers")
-            {
-                var result =  _admincervice.GetCostummers();
-                if (result != null) return Ok(result);
-                
-            }
-            if(collection.ToLower() == "test")
-            {
-                return Ok("test");
-            }
-            return NotFound();
-
-        }
-
-        [Route("test")]
         public IActionResult Get()
         {
-            return Ok("test");
+            var result = _admincervice.GetCostummers();
+            if (result != null) return Ok(result);
+
+            return BadRequest();
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int customerId)
+        {
+            var accounts = _admincervice.GetCustomerAccounts(customerId);
+            if(accounts != null)return Ok(accounts);
+            return BadRequest();
         }
         // POST api/<AdminController>
         [HttpPost]

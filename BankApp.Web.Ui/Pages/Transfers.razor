@@ -1,0 +1,31 @@
+﻿@page "/transactions/{Id:int}"
+@inject HttpClient _client
+
+    <AuthorizeView Roles="User">
+        <div>
+            <ol>
+                @foreach (var t in transactions)
+                {
+                    <li>
+                        <p>Datum: @t.Date</p>
+                        <p>Bank: @t.Bank</p>
+                        <p>Konto: @t.Account</p>
+                        <p>- @t.Amount kr</p>
+                        <p>- @t.Balance kr</p>
+                    </li>
+                }
+            </ol>
+        </div>
+    </AuthorizeView>
+
+    @code {
+        [Parameter]
+        public int Id { get; set; }
+
+        private List<TransferDTO> transactions;
+
+        protected override async Task OnInitializedAsync()
+        {
+            transactions = await _client.GetFromJsonAsync<List<TransferDTO>>(_client.BaseAddress + "api/account?accountid=" + Id);
+        }
+    }

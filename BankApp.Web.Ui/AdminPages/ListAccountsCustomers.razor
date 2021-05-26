@@ -1,0 +1,62 @@
+﻿@inject HttpClient _client
+
+<h3>CustomerList</h3>
+<div class="row">
+    <NavLink class="btn btn-dark" href="register">Add new customer</NavLink>
+</div>
+<div class="row">
+    <InputText DisplayName="Search customers" ValueChanged="@Search" Value=""/>
+</div>
+<div class="row">
+    <ol class="card-deck">
+        @foreach (var item in CustomersRed)
+        {
+            <li class="card">
+                <div class="card-header">
+                    <p>Name: @item.Surname @item.Givenname</p>
+                    <p>Age: @item.Birthday</p>
+                    <p>Gender: @item.Gender</p>
+                </div>
+                <div class="card-body">
+                    <p>Email: @item.Emailaddress</p>
+                    <p>Phone: @item.Telephonecountrycode : @item.Telephonenumber</p>
+                </div>
+                <div class="card-body">
+                    <p>Adress:</p>
+                    <p>@item.Streetaddress</p>
+                    <p>@item.Zipcode @item.City</p>
+                    <p>@item.CountryCode @item.Country</p>
+                </div>
+                <div class="card-footer">
+                    <button @onclick="@(() => SelectCustomer.InvokeAsync(item.id))">
+                        Show accounts
+                    </button>
+                </div>
+            </li>
+        }
+    </ol>
+</div>
+@code {
+    [Parameter]
+    public EventCallback<int> SelectCustomer { get; set; }
+
+    [Parameter]
+    public List<CustomerDTO> CustomersOrg { get; set; }
+
+    private List<CustomerDTO> CustomersRed { get; set; }
+    private string searchText { get; set; } = "";
+
+
+    private void Search()
+    {
+        if(searchText == "") CustomersRed = CustomersOrg;
+
+        CustomersRed = CustomersOrg.FindAll(x => x.Givenname.Contains(searchText) && x.Surname.Contains(searchText));
+    }
+
+    protected override void OnInitialized()
+    {
+        CustomersRed = CustomersOrg;
+    }
+
+}

@@ -15,6 +15,8 @@ namespace BankApp.Web.Ui
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
+            builder.Services.AddOptions();
+            builder.Services.AddAuthorizationCore();
 
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddBlazoredLocalStorage();
