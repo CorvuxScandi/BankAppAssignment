@@ -1,20 +1,20 @@
 ﻿@page "/adminview"
 @inject HttpClient _client
-<AuthorizeView Roles="Admin">
-    <h3>AdminControllboard</h3>
-
-    <div class="row">
-        <div class="col-auto">
-            <ListAccountsCustomers @bind-value="CustomerList" SelectCustomer="CustomerSelected" />
-        </div>
-        <div class="col-auto">
-            <AccountList @bind-value="AccountList" SelectAccount="AccountSelected" />
-        </div>
-        <div class="col-auto">
-            <LoanGenerator @bind-Value="Loan" />
-        </div>
+@attribute [Authorize(Roles = "admin")]
+<h3>AdminControllboard</h3>
+<NavLink href="regrister" class="btn-danger"></NavLink>
+<div class="row">
+    <div class="col-auto">
+        <ListAccountsCustomers @bind-value="CustomerList" SelectCustomer="CustomerSelected" />
     </div>
-</AuthorizeView>
+    <div class="col-auto">
+        <AccountList @bind-value="AccountList" SelectAccount="AccountSelected" />
+    </div>
+    <div class="col-auto">
+        <LoanGenerator @bind-Value="Loan" />
+    </div>
+</div>
+
 @code {
     List<CustomerDTO> CustomerList = new();
     List<AccountDTO> AccountList = new();

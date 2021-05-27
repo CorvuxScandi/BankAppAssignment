@@ -1,4 +1,6 @@
+using BankApp.Data;
 using BankApp.Data.Contexts;
+using BankApp.Data.Reposetories;
 using BankApp.Domain.IdentityModels;
 using BankApp.Infrastructure.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,7 +25,6 @@ namespace BankApp.Web.Api
 
         public IConfiguration Configuration { get; }
 
-       
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -33,9 +34,9 @@ namespace BankApp.Web.Api
             services.AddDbContext<BankAppDataContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Laptop")));
 
-            services.AddDbContext<ApplicationDbContext>(options => 
-            options.UseSqlServer(Configuration.GetConnectionString("Authentication"), 
-            m=> m.MigrationsAssembly("BankApp.Domain")));
+            services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("Authentication"),
+            m => m.MigrationsAssembly("BankApp.Domain")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -69,22 +70,21 @@ namespace BankApp.Web.Api
                     (Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                     };
                 });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            UserManager<ApplicationUser> userManager, CustomerRepository repo)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -92,6 +92,8 @@ namespace BankApp.Web.Api
             {
                 endpoints.MapControllers();
             });
+
+            InitiateAccounts.Initiate(userManager, repo);
         }
 
         private static void RegisterServices(IServiceCollection services)

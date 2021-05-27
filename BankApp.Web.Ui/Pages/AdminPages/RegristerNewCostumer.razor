@@ -1,68 +1,77 @@
 ﻿@page "/regrister"
 @inject HttpClient _client
+@attribute [Authorize(Roles = "admin")]
 
 <h3>Regrister New Costumer</h3>
-@*<AuthorizeView Roles="Admin">
-</AuthorizeView>*@
-
-    <EditForm Model="regModel" OnValidSubmit="CreateCustomer">
+<div class="card shadow-lg">
+    <EditForm Model="regModel" OnValidSubmit="CreateCustomer" Context="customerform">
         <DataAnnotationsValidator />
-            <ValidationSummary />
-            <div class="card shadow-lg">
+        <ValidationSummary />
+
         <label for="fname">First name</label>
-        <InputText id="fname" @bind-Value="regModel.Givenname" class="form-control"/>
+        <InputText id="fname" @bind-Value="regModel.Givenname" class="form-control" />
+
         <label for="lname">Family name</label>
-        <InputText id="lname" @bind-Value="regModel.Surname" class="form-control"/>
+        <InputText id="lname" @bind-Value="regModel.Surname" class="form-control" />
+
         <label for="gender">Gender</label>
-        <InputText id="gender" @bind-Value="regModel.Gender" class="form-control"/>
+        <InputText id="gender" @bind-Value="regModel.Gender" class="form-control" />
+
         <label for="streetaddress">Street address</label>
-        <InputText id="streetaddress" @bind-Value="regModel.Streetaddress" class="form-control"/>
+        <InputText id="streetaddress" @bind-Value="regModel.Streetaddress" class="form-control" />
+
         <label for="city">City</label>
-        <InputText id="city" @bind-Value="regModel.City" class="form-control"/>
+        <InputText id="city" @bind-Value="regModel.City" class="form-control" />
+
         <label for="zip">Zipcode</label>
-        <InputText id="zip" @bind-Value="regModel.Zipcode" class="form-control"/>
+        <InputText id="zip" @bind-Value="regModel.Zipcode" class="form-control" />
+
         <label for="country">Country</label>
-        <InputText id="country" @bind-Value="regModel.Country" class="form-control"/>
+        <InputText id="country" @bind-Value="regModel.Country" class="form-control" />
+
         <label for="cCode">Country Code</label>
-        <InputText id="cCode" @bind-Value="regModel.CountryCode" class="form-control"/>
+        <InputText id="cCode" @bind-Value="regModel.CountryCode" class="form-control" />
+
         <label for="bDay">Birthday</label>
         <InputDate id="bDay" @bind-Value="regModel.Birthday" />
+
         <label for="phoneCode">Phone country code</label>
-        <InputText id="phoneCode" @bind-Value="regModel.Telephonecountrycode" class="form-control"/>
+        <InputText id="phoneCode" @bind-Value="regModel.Telephonecountrycode" class="form-control" />
+
         <label for="phone">Phonenumber</label>
-        <InputText id="phone" @bind-Value="regModel.Telephonenumber" class="form-control"/>
+        <InputText id="phone" @bind-Value="regModel.Telephonenumber" class="form-control" />
         <label for="email">Email</label>
-        <InputText id="email" @bind-Value="regModel.Emailaddress" class="form-control"/>
-        </div>
-        
-        <div class="card shadow-lg">
-            <InputSelect id="accType" @bind-Value="regModel.AccountTypesId" class="form-control">
-           @foreach(var type in AccountTypes)
+
+        <InputText id="email" @bind-Value="regModel.Emailaddress" class="form-control" />
+
+        <br />
+
+        <InputSelect id="accType" @bind-Value="regModel.AccountTypesId" class="form-control">
+            @foreach (var type in AccountTypes)
             {
                 <option value="@type.AccountTypeId">@type.TypeName</option>
             }
         </InputSelect>
-            <label for="frek">Frequency</label>
-        <InputText id="frek" @bind-Value="regModel.Frequency" class="form-control"/>
-       
+        <label for="frek">Frequency</label>
+        <InputText id="frek" @bind-Value="regModel.Frequency" class="form-control" />
+
         <label for="accType">Account Type</label>
-        
-        </div>
+
         <br />
         <input type="submit" class="btn btn-primary" />
-
     </EditForm>
+</div>
 
 @code {
     private List<AccountType> AccountTypes = new();
     protected override async Task OnInitializedAsync()
     {
-       AccountTypes = await _client.GetFromJsonAsync<List<AccountType>>(_client.BaseAddress + "api/admin/accounttypes");
+        AccountTypes = await _client.GetFromJsonAsync<List<AccountType>>(_client.BaseAddress + "api/admin/accounttypes");
     }
     private RegisterModel regModel = new();
 
     private void CreateCustomer()
     {
-        
+
     }
 }
