@@ -29,7 +29,7 @@ namespace BankApp.Web.Ui.Authentication
             var data = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("username", authenticationModel.Username),
+                new KeyValuePair<string, string>("email", authenticationModel.Email),
                 new KeyValuePair<string, string>("password", authenticationModel.Password)
             });
 

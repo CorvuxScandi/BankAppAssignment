@@ -11,6 +11,8 @@ namespace BankApp.Application.Interfaces
     {
         ApplicationResponce AddAccountType(AccountType accountType);
 
+        List<AccountType> AccountTypes();
+
         List<CustomerDTO> GetCostummers();
 
         List<AccountDTO> GetCustomerAccounts(int id);

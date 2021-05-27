@@ -38,9 +38,14 @@ namespace BankApp.Web.Api.Controllers
             return BadRequest();
         }
 
+        [HttpGet("accounttypes")]
+        public IActionResult GetAccTypes()
+        {
+            return Ok(_admincervice.AccountTypes());
+        }
+
         // POST api/<AdminController>
-        [HttpPost]
-        [Route("newloan")]
+        [HttpPost("newloan")]
         public IActionResult NewLoan([FromBody] LoanDTO loan)
         {
             if (loan != null)
@@ -51,8 +56,7 @@ namespace BankApp.Web.Api.Controllers
             return BadRequest();
         }
 
-        [HttpPost]
-        [Route("newcostumer")]
+        [HttpPost("newcostumer")]
         public async Task<IActionResult> NewCostumer([FromBody] RegisterModel customerModel)
         {
             var result = await _admincervice.AddNewCustomerProfile(customerModel);

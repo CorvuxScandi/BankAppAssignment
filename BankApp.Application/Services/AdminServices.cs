@@ -169,5 +169,10 @@ namespace BankApp.Application.Services
         {
             throw new NotImplementedException();
         }
+
+        public List<AccountType> AccountTypes()
+        {
+            return _TypeRepo.GetAll().ToList();
+        }
     }
 }

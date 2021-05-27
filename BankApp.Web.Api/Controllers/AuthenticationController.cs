@@ -1,4 +1,5 @@
-﻿using BankApp.Domain.DomainModels;
+﻿using BankApp.Application.ApiModels;
+using BankApp.Domain.DomainModels;
 using BankApp.Domain.IdentityModels;
 using BankApp.Web.Api.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -81,17 +82,17 @@ namespace BankApp.Web.Api.Controllers
         [Route("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
+            var userExists = await _userManager.FindByNameAsync(model.Emailaddress);
             if (userExists != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApplicationResponce { ResponceCode = 409, ResponceText = "User already exists!" });
 
             ApplicationUser user = new ApplicationUser()
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                Email = model.Emailaddress,
+                SecurityStamp = Guid.NewGuid().ToString()
+                
             };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, "!Sunshine1");
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new { ResponceCode = 400, ResponceText = "User creation failed! Please check user details and try again." });
 

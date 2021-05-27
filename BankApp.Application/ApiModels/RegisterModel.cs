@@ -25,7 +25,6 @@ namespace BankApp.Application.ApiModels
 
         //Account
         public string Frequency { get; set; }
-
         public int AccountTypesId { get; set; }
         public DateTime Created { get; set; }
         public decimal Balance { get; set; }
