@@ -2,6 +2,8 @@ using BankApp.Data;
 using BankApp.Data.Contexts;
 using BankApp.Data.Reposetories;
 using BankApp.Domain.IdentityModels;
+using BankApp.Domain.Interfaces;
+using BankApp.Domain.Models;
 using BankApp.Infrastructure.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -61,20 +63,25 @@ namespace BankApp.Web.Api
                     {
                         ValidateIssuer = true,
                         ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
                         ValidAudience = Configuration
                     ["JWT: ValidAudience"],
                         ValidIssuer = Configuration
                     ["JWT:ValidIssuer"],
                         IssuerSigningKey =
                         new SymmetricSecurityKey
-                    (Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                    (Encoding.UTF8.GetBytes(Configuration["JWT:secretKey"]))
                     };
                 });
+
+            RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            UserManager<ApplicationUser> userManager, CustomerRepository repo)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+            UserManager<ApplicationUser> user, BankAppDataContext context, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -93,7 +100,7 @@ namespace BankApp.Web.Api
                 endpoints.MapControllers();
             });
 
-            InitiateAccounts.Initiate(userManager, repo);
+            InitiateAccounts.SeedData(user, roleManager, context);
         }
 
         private static void RegisterServices(IServiceCollection services)

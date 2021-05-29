@@ -40,13 +40,15 @@ namespace BankApp.Web.Ui.Authentication
                     "jwtAuthType")));
         }
 
-        public void NotifyUserAuthentication(string token)
+        public void NotifyUserAuthentication(string email)
         {
             var authenticatedUser = new ClaimsPrincipal(
                     new ClaimsIdentity(
-                        JwtParser.ParseClaimsFromJwt(token),
-                    "jwtAuthType"));
-
+                        new[] 
+                        { 
+                            new Claim(ClaimTypes.Name, email) 
+                        }, "jwrAuthType"));
+                        
             var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
             NotifyAuthenticationStateChanged(authState);
         }

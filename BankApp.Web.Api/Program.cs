@@ -1,5 +1,13 @@
+using BankApp.Data;
+using BankApp.Data.Contexts;
+using BankApp.Domain.Interfaces;
+using BankApp.Domain.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace BankApp.Web.Api
 {

@@ -33,9 +33,9 @@ namespace BankApp.Web.Api.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost]
-        [Route("Login")]
-        public async Task<IActionResult> Login([FromBody] AuthenticationUserModel model)
+        [HttpPost, Route("login")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(AuthenticationUserModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
@@ -58,7 +58,7 @@ namespace BankApp.Web.Api.Controllers
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(2),
+                    expires: DateTime.Now.AddMinutes(3),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
@@ -72,14 +72,7 @@ namespace BankApp.Web.Api.Controllers
             return Unauthorized();
         }
 
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok("Hello world");
-        }
-
-        [HttpPost]
-        [Route("register-admin")]
+        [HttpPost("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
             var userExists = await _userManager.FindByNameAsync(model.Emailaddress);

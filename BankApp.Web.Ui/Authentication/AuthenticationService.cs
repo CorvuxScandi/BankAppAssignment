@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -12,50 +14,41 @@ namespace BankApp.Web.Ui.Authentication
     public class AuthenticationService : IAuthenticationService
     {
         private readonly HttpClient _client;
-        private readonly AuthenticationStateProvider _authState;
+        private readonly AuthenticationStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorage;
 
         public AuthenticationService(HttpClient client,
-            AuthenticationStateProvider authState,
+            AuthenticationStateProvider authStateProvider,
             ILocalStorageService storageService)
         {
             _client = client;
-            _authState = authState;
+            _authStateProvider = authStateProvider;
             _localStorage = storageService;
         }
 
         public async Task<AuthenticatedUserModel> Login(AuthenticationUserModel authenticationModel)
         {
-            var data = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("email", authenticationModel.Email),
-                new KeyValuePair<string, string>("password", authenticationModel.Password)
-            });
+            var content = JsonSerializer.Serialize(authenticationModel);
+            var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            var authResult = await _client.PostAsync(_client.BaseAddress + "api/authentication", data);
+            var authResult = await _client.PostAsync("https://localhost:5008/api/authentication/login", bodyContent);
             var authContent = await authResult.Content.ReadAsStringAsync();
-
-            if (authResult.IsSuccessStatusCode == false)
+            var result = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            if (!authResult.IsSuccessStatusCode)
             {
-                return null;
+                return result;
             }
-            var result = JsonSerializer.Deserialize<AuthenticatedUserModel>(
-                authContent,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            await _localStorage.SetItemAsync("authToken", result.Token);
+            ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(authenticationModel.Email);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
 
-            await _localStorage.SetItemAsync("authToken", result.AccessToken);
-
-            ((AuthStateProvider)_authState).NotifyUserAuthentication(result.AccessToken);
-
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.AccessToken);
-            return result;
+            return new AuthenticatedUserModel { IsAuthSuccessful = true };
         }
 
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("authToken");
-            ((AuthStateProvider)_authState).NotifyUserLogout();
+            ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
             _client.DefaultRequestHeaders.Authorization = null;
         }
     }
