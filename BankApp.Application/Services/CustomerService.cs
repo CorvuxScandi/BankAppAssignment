@@ -62,25 +62,15 @@ namespace BankApp.Application.Services
             };
         }
 
-        public ApplicationResponce GetAccountInfo(string authId)
+        public ApplicationResponce GetCustomerInfo(string email)
         {
 
-            var customerID = FindCustomerIdWithUserId(authId);
-            if (customerID == 0)
-            {
-                return new()
-                {
-                    ResponceCode = 404,
-                    ResponceText = "Customer not found"
-                };
-            }
-
-            var customer = _customerRepo.GetById(customerID);
+            var customer = _customerRepo.GetAll().FirstOrDefault(x => x.Emailaddress == email);
 
             var CustomerDispositions =
                 _dispositionRepo
                 .GetAll()
-                .Where(x => x.CustomerId == customerID);
+                .Where(x => x.CustomerId == customer.CustomerId);
 
             CustomerDetails bankCustomer = new()
             {
@@ -113,17 +103,10 @@ namespace BankApp.Application.Services
             };
         }
 
-        public ApplicationResponce GetTransactions(int accountId)
+        public ApplicationResponce GetTransactions(int accountID)
         {
-            var account = _accountRepo.GetById(accountId);
-            List<TransferDTO> transactions = new();
-
-            foreach (var transfer in account.Transactions)
-            {
-                transactions.Add(CustomMapper.MapDTO<Transaction, TransferDTO>(transfer));
-            }
-            
-            if (account == null)
+            var account = _accountRepo.GetById(accountID);
+            if (account is null)
             {
                 return new()
                 {
@@ -132,6 +115,16 @@ namespace BankApp.Application.Services
                 };
             };
 
+
+            List<TransferDTO> transactions = new();
+
+            foreach (var transfer in account.Transactions)
+            {
+                transactions.Add(CustomMapper.MapDTO<Transaction, TransferDTO>(transfer));
+            }
+            
+            
+
             return new()
             {
                 ResponceCode = 200,
@@ -139,11 +132,5 @@ namespace BankApp.Application.Services
             };
         }
 
-        private int FindCustomerIdWithUserId(string id)
-        {
-            var result = _customerRepo.GetAll().FirstOrDefault(c => c.ApplicationUserId == id);
-            if (result == null) return 0;
-            return result.CustomerId;
-        }
     }
 }

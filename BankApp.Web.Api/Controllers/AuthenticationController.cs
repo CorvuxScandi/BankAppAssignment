@@ -33,9 +33,8 @@ namespace BankApp.Web.Api.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost, Route("login")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(AuthenticationUserModel model)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] AuthenticationUserModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
@@ -44,7 +43,7 @@ namespace BankApp.Web.Api.Controllers
 
                 var authClaims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
@@ -53,12 +52,12 @@ namespace BankApp.Web.Api.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:securityKey"]));
 
                 var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
                     audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddMinutes(3),
+                    expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["JWT:expiryInMinutes"])),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
@@ -69,19 +68,21 @@ namespace BankApp.Web.Api.Controllers
                     expiration = token.ValidTo
                 });
             }
-            return Unauthorized();
+            return Unauthorized(new AuthenticatedUserModel {ErrorMessage = "Invalid login" });
         }
 
-        [HttpPost("register-admin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
-        {
-            var userExists = await _userManager.FindByNameAsync(model.Emailaddress);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ApplicationResponce { ResponceCode = 409, ResponceText = "User already exists!" });
 
-            ApplicationUser user = new ApplicationUser()
+        [HttpPost("newIdentity")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> CreateIdentity([FromBody] IdentityRegModel model)
+        {
+            var userExists = await _userManager.FindByNameAsync(model.Email);
+            if (userExists != null)
+                return BadRequest(new ApplicationResponce { ResponceCode = 409, ResponceText = "User already exists!" });
+
+            ApplicationUser user = new()
             {
-                Email = model.Emailaddress,
+                Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString()
                 
             };
@@ -89,17 +90,16 @@ namespace BankApp.Web.Api.Controllers
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new { ResponceCode = 400, ResponceText = "User creation failed! Please check user details and try again." });
 
-            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-
-            if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
+            
+            if (model.NewAdmin)
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.Admin);
             }
-
+            await _userManager.AddToRoleAsync(user, UserRoles.User);
+ 
             return Ok(new ApplicationResponce { ResponceCode = 201, ResponceText = "User created successfully!" });
         }
+
+        
     }
 }

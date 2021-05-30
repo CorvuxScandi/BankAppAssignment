@@ -96,24 +96,10 @@ namespace BankApp.Application.Services
 
         public async Task<ApplicationResponce> AddNewCustomerProfile(RegisterModel model)
         {
-            var userExists = await _userManager.FindByEmailAsync(model.Emailaddress);
-            if (userExists != null)
-                return new()
-                {
-                    ResponceCode = 409,
-                    ResponceText = "User alredy exists"
-                };
-            ApplicationUser user = new ApplicationUser()
-            {
-                Email = model.Emailaddress,
-                SecurityStamp = Guid.NewGuid().ToString(),
-            };
-            var result = await _userManager.CreateAsync(user, "!Sunshine1");
-            if (!result.Succeeded) return new() { ResponceCode = 400, ResponceText = "Server error creating new user" };
+            
 
-            Customer newC = CustomMapper.MapDTO<RegisterModel, Customer>(model);
-            newC.ApplicationUserId = user.Id;
-            Account newA = CustomMapper.MapDTO<RegisterModel, Account>(model);
+            Customer newC = CustomMapper.MapDTO<CustomerDTO, Customer>(model.Customer);
+            Account newA = CustomMapper.MapDTO<AccountDTO, Account>(model.Account);
             newA.Created = DateTime.Today;
 
             //Repo create and save

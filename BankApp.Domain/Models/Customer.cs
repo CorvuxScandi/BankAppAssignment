@@ -28,7 +28,6 @@ namespace BankApp.Domain.Models
         public string Telephonecountrycode { get; set; }
         public string Telephonenumber { get; set; }
         public string Emailaddress { get; set; }
-        public string ApplicationUserId { get; set; }
 
         public virtual ICollection<Disposition> Dispositions { get; set; }
     }

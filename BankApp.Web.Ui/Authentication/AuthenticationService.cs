@@ -38,11 +38,11 @@ namespace BankApp.Web.Ui.Authentication
             {
                 return result;
             }
-            await _localStorage.SetItemAsync("authToken", result.Token);
+            await _localStorage.SetItemAsync("authToken", result.AccessToken);
             ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(authenticationModel.Email);
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.AccessToken);
 
-            return new AuthenticatedUserModel { IsAuthSuccessful = true };
+            return new AuthenticatedUserModel { Authenticaded = true };
         }
 
         public async Task Logout()

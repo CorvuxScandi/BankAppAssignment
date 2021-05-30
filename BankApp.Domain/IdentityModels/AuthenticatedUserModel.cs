@@ -9,5 +9,7 @@ namespace BankApp.Web.Api.Models
     {
         public string AccessToken { get; set; }
         public string UserName { get; set; }
+        public string ErrorMessage { get; set; }
+        public bool Authenticaded { get; set; } = false;
     }
 }

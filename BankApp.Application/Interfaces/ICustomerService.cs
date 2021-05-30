@@ -7,7 +7,7 @@ namespace BankApp.Application.Interfaces
 {
     public interface ICustomerService
     {
-        ApplicationResponce GetAccountInfo(string authId);
+        ApplicationResponce GetCustomerInfo(string email);
 
         ApplicationResponce Addtransaction(Transaction transaction);
 

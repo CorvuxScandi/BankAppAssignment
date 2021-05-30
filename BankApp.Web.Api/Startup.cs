@@ -1,9 +1,6 @@
 using BankApp.Data;
 using BankApp.Data.Contexts;
-using BankApp.Data.Reposetories;
 using BankApp.Domain.IdentityModels;
-using BankApp.Domain.Interfaces;
-using BankApp.Domain.Models;
 using BankApp.Infrastructure.IoC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -51,13 +48,9 @@ namespace BankApp.Web.Api
                   JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme =
                 JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme =
-                JwtBearerDefaults.AuthenticationScheme;
-            })
-                .AddJwtBearer(options =>
-                {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
+                
+            }).AddJwtBearer(options =>
+            {
                     options.TokenValidationParameters =
                     new TokenValidationParameters()
                     {
@@ -66,15 +59,13 @@ namespace BankApp.Web.Api
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
 
-                        ValidAudience = Configuration
-                    ["JWT: ValidAudience"],
-                        ValidIssuer = Configuration
-                    ["JWT:ValidIssuer"],
+                        ValidAudience = Configuration["JWT:ValidAudience"],
+                        ValidIssuer = Configuration["JWT:ValidIssuer"],
                         IssuerSigningKey =
                         new SymmetricSecurityKey
-                    (Encoding.UTF8.GetBytes(Configuration["JWT:secretKey"]))
+                    (Encoding.UTF8.GetBytes(Configuration["JWT:securityKey"]))
                     };
-                });
+            });
 
             RegisterServices(services);
         }

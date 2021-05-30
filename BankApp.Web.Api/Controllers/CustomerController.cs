@@ -19,41 +19,31 @@ namespace BankApp.Web.Api.Controllers
     public class CustomerController : ControllerBase
     {
         private ICustomerService _customerService;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         public CustomerController(ICustomerService customerService)
         {
             _customerService = customerService;
         }
 
-        public CustomerController(UserManager<ApplicationUser> userManager)
-        {
-            _userManager = userManager;
-        }
-
         // GET api/<ValuesController>/5
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("profile")]
+        public IActionResult Get()
         {
-            var currentUser = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Name");
+            var currentUserEmail = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Email").Value;
+                        
 
-            var x = await _userManager.FindByNameAsync(currentUser.Value);
-            
-
-            var responce = _customerService.GetAccountInfo(x.Id);
+            var responce = _customerService.GetCustomerInfo(currentUserEmail);
             var customerInfo = responce.ResponceBody;
             if (responce.ResponceCode < 300) return Ok(customerInfo);
             return BadRequest();
         }
-        [HttpGet]
-        public IActionResult GetTransactions(int accountid)
+        [HttpGet("accounts")]
+        public IActionResult GetTransactions(int accountId)
         {
-
-            var responce = _customerService.GetTransactions(accountid);
+            var responce = _customerService.GetTransactions(accountId);
 
             if (responce.ResponceCode < 300) return Ok(responce.ResponceBody);
             return BadRequest();
-
         }
 
         // POST api/<ValuesController>

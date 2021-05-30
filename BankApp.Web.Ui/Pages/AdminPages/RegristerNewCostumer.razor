@@ -1,5 +1,6 @@
 ﻿@page "/regrister"
 @inject HttpClient _client
+@inject JsonContent json
 @attribute [Authorize(Roles = "admin")]
 
 <h3>Regrister New Costumer</h3>
@@ -64,14 +65,12 @@
 
 @code {
     private List<AccountType> AccountTypes = new();
+
+    RegisterModel model = new();
+
     protected override async Task OnInitializedAsync()
     {
-        AccountTypes = await _client.GetFromJsonAsync<List<AccountType>>(_client.BaseAddress + "api/admin/accounttypes");
+        AccountTypes = await _client.GetFromJsonAsync<List<AccountType>>("api/admin/accounttypes");
     }
-    private RegisterModel regModel = new();
-
-    private void CreateCustomer()
-    {
-
-    }
+    
 }
