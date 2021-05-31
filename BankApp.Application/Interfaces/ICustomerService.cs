@@ -9,7 +9,7 @@ namespace BankApp.Application.Interfaces
     {
         ApplicationResponce GetCustomerInfo(string email);
 
-        ApplicationResponce Addtransaction(Transaction transaction);
+        ApplicationResponce Addtransaction(InternalTransaction transaction);
 
         ApplicationResponce GetTransactions(int accountId);
     }

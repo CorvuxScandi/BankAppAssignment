@@ -20,6 +20,7 @@ namespace BankApp.Application.Services
         public IRepository<Disposition> _dispositionRepo;
         public IRepository<Loan> _loanRepo;
         public IRepository<Transaction> _transactionRepo;
+        public IRepository<InternalTransaction> _internalTransactionRepo;
 
         public CustomerService(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo,
@@ -27,8 +28,8 @@ namespace BankApp.Application.Services
             IRepository<Customer> customerRepo,
             IRepository<Disposition> dispositionRepo,
             IRepository<Loan> loanRepo,
-            IRepository<Transaction> transactionRepo
-            )
+            IRepository<Transaction> transactionRepo,
+            IRepository<InternalTransaction> internalTransactionRepo)
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -37,23 +38,33 @@ namespace BankApp.Application.Services
             _dispositionRepo = dispositionRepo;
             _loanRepo = loanRepo;
             _transactionRepo = transactionRepo;
+            _internalTransactionRepo = internalTransactionRepo;
         }
 
-        public ApplicationResponce Addtransaction(Transaction transaction)
+        public ApplicationResponce Addtransaction(InternalTransaction transaction)
         {
-            Account account = transaction.AccountNavigation;
-            if (account.Balance < transaction.Amount)
+            Transaction tran = new()
             {
-                return new()
-                {
-                    ResponceCode = 409,
-                    ResponceText = "Account balance too low"
-                };
-            }
+                Account = "internal: " + transaction.ToAccount.ToString(),
+                AccountId = transaction.FromAccount,
+                Amount = transaction.Amount,
+                Balance = transaction.Balance,
+                Date = transaction.Date,
+                Type = "Internal bank transaction"
+            };
+
+            Account account = _accountRepo.GetById(transaction.FromAccount);
 
             account.Balance -= transaction.Amount;
 
             _accountRepo.Update(account);
+            _accountRepo.Save();
+
+            _transactionRepo.Create(tran);
+            _transactionRepo.Save();
+
+            _internalTransactionRepo.Create(transaction);
+            _internalTransactionRepo.Save();
 
             return new()
             {
@@ -64,7 +75,6 @@ namespace BankApp.Application.Services
 
         public ApplicationResponce GetCustomerInfo(string email)
         {
-
             var customer = _customerRepo.GetAll().FirstOrDefault(x => x.Emailaddress == email);
 
             var CustomerDispositions =
@@ -115,15 +125,12 @@ namespace BankApp.Application.Services
                 };
             };
 
-
             List<TransferDTO> transactions = new();
 
             foreach (var transfer in account.Transactions)
             {
                 transactions.Add(CustomMapper.MapDTO<Transaction, TransferDTO>(transfer));
             }
-            
-            
 
             return new()
             {
@@ -131,6 +138,5 @@ namespace BankApp.Application.Services
                 ResponceBody = transactions
             };
         }
-
     }
 }

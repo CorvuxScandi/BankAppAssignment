@@ -37,7 +37,7 @@ namespace BankApp.Web.Ui.Models
         public string Frequency { get; set; }
         public DateTime Created { get; set; }
         public decimal Balance { get; set; }
-        public string AccountType { get; set; }
+        public int AccountTypesId { get; set; }
     }
 
     public class CardDTO

@@ -1,20 +1,21 @@
 ﻿@page "/your-accounts"
+@inject CustomerServices services
 @inject HttpClient _client
 @attribute [Authorize(Roles = "User")]
 
 <div>
-    <p>Välkommen @details.CustomerInfo.Givenname @details.CustomerInfo.Surname</p>
+    <p>Välkommen @services.CustomerInfo.CustomerInfo.Givenname @services.CustomerInfo.CustomerInfo.Surname</p>
 </div>
 <div>
     <p>Dina konton</p>
     <ul>
-        @foreach (var acc in details.Accounts)
+        @foreach (var acc in services.CustomerInfo.Accounts)
         {
             <li>
                 <div class="card">
                     <div class="card-header">
                         <h6>KontoNr: @acc.AccountId </h6>
-                        <p>@acc.AccountType</p>
+                        <p>@accountTypes.First(x => x.AccountTypeId == acc.AccountTypesId).TypeName</p>
                     </div>
                     <div class="card-body">
                         <ol>
@@ -28,7 +29,7 @@
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-primary" onclick="">Se kontots transaktioner</button>
-                        <button>Gör en transaktion</button>
+                        <NavLink href="maketransaction">Gör en överföring från detta konto</NavLink>
                     </div>
                 </div>
             </li>
@@ -38,7 +39,7 @@
 <div>
     <p>Dina kort</p>
     <ol class="card-deck">
-        @foreach (var card in details.Cards)
+        @foreach (var card in services.CustomerInfo.Cards)
         {
             <li class="card">
                 <ol class="card-body">
@@ -53,11 +54,13 @@
 </div>
 
 @code {
-    private CustomerDetails details;
+
+    private List<AccountType> accountTypes = new();
 
     protected override async Task OnInitializedAsync()
     {
-        details = await _client.GetFromJsonAsync<CustomerDetails>(_client.BaseAddress + "api/customer");
+        accountTypes = await _client.GetFromJsonAsync<List<AccountType>>("api/admin/accounttypes");
+        services.GetDetails();
     }
 
 }

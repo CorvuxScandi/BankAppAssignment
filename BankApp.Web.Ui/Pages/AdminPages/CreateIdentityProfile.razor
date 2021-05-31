@@ -1,12 +1,11 @@
 ﻿@inject HttpClient _client
 
-
 <EditForm Model="regModel" OnValidSubmit="Create">
 
     <label for="email">Email:</label>
     <InputText id="email" @bind-Value="regModel.Email" class="form-control" />
-    
-    <InputSelect id="role" @bind-Value="regModel.NewAdmin" class="form-control" >
+
+    <InputSelect id="role" @bind-Value="regModel.IsAdmin" class="form-control">
         <option value="true">Administrator</option>
         <option value="false">Customer</option>
     </InputSelect>
@@ -14,15 +13,11 @@
 
 @code {
 
-
-    public record IdentityRegModel(string Email, bool NewAdmin);
-        IdentityRegModel regModel;
+    IdentityRegModel regModel = new();
 
     private async void Create()
     {
         var result = await _client.PostAsJsonAsync("api/authentication/newIdentity", regModel);
-
-
     }
 
 }

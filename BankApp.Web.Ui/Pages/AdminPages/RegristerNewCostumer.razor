@@ -4,57 +4,59 @@
 @attribute [Authorize(Roles = "admin")]
 
 <h3>Regrister New Costumer</h3>
+@if (showErrors)
+{<h2>@ErrorMssg</h2>}
 <div class="card shadow-lg">
-    <EditForm Model="regModel" OnValidSubmit="CreateCustomer" Context="customerform">
+    <EditForm Model="regModel" OnValidSubmit="CreateCustomer">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
         <label for="fname">First name</label>
-        <InputText id="fname" @bind-Value="regModel.Givenname" class="form-control" />
+        <InputText id="fname" @bind-Value="regModel.Customer.Givenname" class="form-control" />
 
         <label for="lname">Family name</label>
-        <InputText id="lname" @bind-Value="regModel.Surname" class="form-control" />
+        <InputText id="lname" @bind-Value="regModel.Customer.Surname" class="form-control" />
 
         <label for="gender">Gender</label>
-        <InputText id="gender" @bind-Value="regModel.Gender" class="form-control" />
+        <InputText id="gender" @bind-Value="regModel.Customer.Gender" class="form-control" />
 
         <label for="streetaddress">Street address</label>
-        <InputText id="streetaddress" @bind-Value="regModel.Streetaddress" class="form-control" />
+        <InputText id="streetaddress" @bind-Value="regModel.Customer.Streetaddress" class="form-control" />
 
         <label for="city">City</label>
-        <InputText id="city" @bind-Value="regModel.City" class="form-control" />
+        <InputText id="city" @bind-Value="regModel.Customer.City" class="form-control" />
 
         <label for="zip">Zipcode</label>
-        <InputText id="zip" @bind-Value="regModel.Zipcode" class="form-control" />
+        <InputText id="zip" @bind-Value="regModel.Customer.Zipcode" class="form-control" />
 
         <label for="country">Country</label>
-        <InputText id="country" @bind-Value="regModel.Country" class="form-control" />
+        <InputText id="country" @bind-Value="regModel.Customer.Country" class="form-control" />
 
         <label for="cCode">Country Code</label>
-        <InputText id="cCode" @bind-Value="regModel.CountryCode" class="form-control" />
+        <InputText id="cCode" @bind-Value="regModel.Customer.CountryCode" class="form-control" />
 
         <label for="bDay">Birthday</label>
-        <InputDate id="bDay" @bind-Value="regModel.Birthday" />
+        <InputDate id="bDay" @bind-Value="regModel.Customer.Birthday" />
 
         <label for="phoneCode">Phone country code</label>
-        <InputText id="phoneCode" @bind-Value="regModel.Telephonecountrycode" class="form-control" />
+        <InputText id="phoneCode" @bind-Value="regModel.Customer.Telephonecountrycode" class="form-control" />
 
         <label for="phone">Phonenumber</label>
-        <InputText id="phone" @bind-Value="regModel.Telephonenumber" class="form-control" />
+        <InputText id="phone" @bind-Value="regModel.Customer.Telephonenumber" class="form-control" />
         <label for="email">Email</label>
 
-        <InputText id="email" @bind-Value="regModel.Emailaddress" class="form-control" />
+        <InputText id="email" @bind-Value="regModel.Customer.Emailaddress" class="form-control" />
 
         <br />
 
-        <InputSelect id="accType" @bind-Value="regModel.AccountTypesId" class="form-control">
+        <InputSelect id="accType" @bind-Value="regModel.Account.AccountTypesId" class="form-control">
             @foreach (var type in AccountTypes)
             {
                 <option value="@type.AccountTypeId">@type.TypeName</option>
             }
         </InputSelect>
         <label for="frek">Frequency</label>
-        <InputText id="frek" @bind-Value="regModel.Frequency" class="form-control" />
+        <InputText id="frek" @bind-Value="regModel.Account.Frequency" class="form-control" />
 
         <label for="accType">Account Type</label>
 
@@ -64,13 +66,25 @@
 </div>
 
 @code {
+    private bool showErrors = false;
+    private string ErrorMssg = "Error happed";
     private List<AccountType> AccountTypes = new();
 
-    RegisterModel model = new();
+    RegisterModel regModel = new();
 
     protected override async Task OnInitializedAsync()
     {
         AccountTypes = await _client.GetFromJsonAsync<List<AccountType>>("api/admin/accounttypes");
     }
-    
+
+    private async void CreateCustomer()
+    {
+        var result = await _client.PostAsJsonAsync("api/admin/newcostumer", regModel);
+
+        if (!result.IsSuccessStatusCode)
+        {
+            showErrors = true;
+        }
+        showErrors = false;
+    }
 }

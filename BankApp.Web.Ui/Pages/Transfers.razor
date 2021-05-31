@@ -1,10 +1,10 @@
 ﻿@page "/transactions/{Id:int}"
-@inject HttpClient _client
+@inject CustomerServices services
 @attribute [Authorize(Roles = "User")]
 
 <div>
     <ol>
-        @foreach (var t in transactions)
+        @foreach (var t in services.Transactions)
         {
             <li>
                 <p>Datum: @t.Date</p>
@@ -21,10 +21,9 @@
     [Parameter]
     public int Id { get; set; }
 
-    private List<TransferDTO> transactions;
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        transactions = await _client.GetFromJsonAsync<List<TransferDTO>>(_client.BaseAddress + "api/account?accountid=" + Id);
+        services.GetTransactions(Id);
     }
+
 }

@@ -40,7 +40,6 @@
     [Parameter]
     public EventCallback<int> SelectCustomer { get; set; }
 
-    [Parameter]
     public List<CustomerDTO> CustomersOrg { get; set; }
 
     private List<CustomerDTO> CustomersRed { get; set; }
@@ -53,8 +52,10 @@
         CustomersRed = CustomersOrg.FindAll(x => x.Givenname.Contains(searchText) && x.Surname.Contains(searchText));
     }
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
+        var customers = await _client.GetFromJsonAsync<List<CustomerDTO>>("api/admin");
+        CustomersOrg = customers;
         CustomersRed = CustomersOrg;
     }
 

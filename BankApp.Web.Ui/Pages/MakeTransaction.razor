@@ -1,0 +1,30 @@
+﻿@page "/makeinternaltransaction{Account}"
+@attribute [Authorize(Roles = "User")]
+@inject CustomerServices services
+
+<h3>MakeTransaction</h3>
+
+<EditForm Model="newInternal" OnValidSubmit="transaction">
+
+    <label for="accountTo">Överför till</label>
+    <InputNumber id="accountTo" @bind-Value="newInternal.ToAccount" class="form-control" />
+
+    <label for="amount">Mängd</label>
+    <InputNumber id="amount" @bind-Value="newInternal.Amount" class="form-control" />
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public AccountDTO Account { get; init; }
+
+    private InternalTransaction newInternal;
+
+    private void transaction()
+    {
+        newInternal.Date = DateTime.Now;
+        newInternal.FromAccount = Account.AccountId;
+        newInternal.Balance = (Account.Balance - newInternal.Amount);
+        services.InternalTransaction(newInternal);
+    }
+}

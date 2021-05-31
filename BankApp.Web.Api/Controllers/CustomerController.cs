@@ -30,30 +30,29 @@ namespace BankApp.Web.Api.Controllers
         public IActionResult Get()
         {
             var currentUserEmail = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Email").Value;
-                        
 
             var responce = _customerService.GetCustomerInfo(currentUserEmail);
             var customerInfo = responce.ResponceBody;
             if (responce.ResponceCode < 300) return Ok(customerInfo);
             return BadRequest();
         }
+
         [HttpGet("accounts")]
-        public IActionResult GetTransactions(int accountId)
+        public IActionResult GetTransactions(int id)
         {
-            var responce = _customerService.GetTransactions(accountId);
+            var responce = _customerService.GetTransactions(id);
 
             if (responce.ResponceCode < 300) return Ok(responce.ResponceBody);
             return BadRequest();
         }
 
         // POST api/<ValuesController>
-        [HttpPost]
-        public IActionResult Post([FromBody] Transaction transaction)
+        [HttpPost("internal")]
+        public IActionResult Post([FromBody] InternalTransaction transaction)
         {
-           var result = _customerService.Addtransaction(transaction);
+            var result = _customerService.Addtransaction(transaction);
             if (result.ResponceCode < 300) return Ok();
             return BadRequest();
         }
-
     }
 }

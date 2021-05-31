@@ -23,6 +23,7 @@ namespace BankApp.Data.Contexts
         public virtual DbSet<Disposition> Dispositions { get; set; }
         public virtual DbSet<Loan> Loans { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
+        public virtual DbSet<InternalTransaction> InternalTransactions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -136,10 +137,6 @@ namespace BankApp.Data.Contexts
                 entity.Property(e => e.Zipcode)
                     .IsRequired()
                     .HasMaxLength(15);
-                entity.Property(e => e.ApplicationUserId)
-                .HasMaxLength(100)
-                .IsRequired()
-                .HasColumnName("IdentityId");
             });
 
             modelBuilder.Entity<Disposition>(entity =>
@@ -180,34 +177,47 @@ namespace BankApp.Data.Contexts
                     .HasConstraintName("FK_Loans_Accounts");
             });
 
-            modelBuilder.Entity<Transaction>(entity =>
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+
+            modelBuilder.Entity<InternalTransaction>(entity =>
             {
-                entity.Property(e => e.Account).HasMaxLength(50);
+                entity.ToTable("InternalTransaction");
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(13, 2)");
 
                 entity.Property(e => e.Balance).HasColumnType("decimal(13, 2)");
 
-                entity.Property(e => e.Bank).HasMaxLength(50);
-
-                entity.Property(e => e.Date).HasColumnType("date");
-
-                entity.Property(e => e.Operation)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Symbol).HasMaxLength(50);
-
-                entity.Property(e => e.Type)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.HasOne(d => d.AccountNavigation)
-                    .WithMany(p => p.Transactions)
-                    .HasForeignKey(d => d.AccountId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Transactions_Accounts");
+                entity.Property(e => e.Date).HasColumnType("datetime");
             });
+
+            modelBuilder.Entity<Transaction>(entity =>
+                {
+                    entity.Property(e => e.Account).HasMaxLength(50);
+
+                    entity.Property(e => e.Amount).HasColumnType("decimal(13, 2)");
+
+                    entity.Property(e => e.Balance).HasColumnType("decimal(13, 2)");
+
+                    entity.Property(e => e.Bank).HasMaxLength(50);
+
+                    entity.Property(e => e.Date).HasColumnType("date");
+
+                    entity.Property(e => e.Operation)
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    entity.Property(e => e.Symbol).HasMaxLength(50);
+
+                    entity.Property(e => e.Type)
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    entity.HasOne(d => d.AccountNavigation)
+                        .WithMany(p => p.Transactions)
+                        .HasForeignKey(d => d.AccountId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_Transactions_Accounts");
+                });
 
             OnModelCreatingPartial(modelBuilder);
         }

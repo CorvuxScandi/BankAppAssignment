@@ -17,7 +17,6 @@ namespace BankApp.Data
             //SeedUsers(_manager, appDataContext);
         }
 
-
         public static void SeedRoles(RoleManager<IdentityRole> _roleManager)
         {
             if (!_roleManager.RoleExistsAsync("Admin").Result)
@@ -35,7 +34,7 @@ namespace BankApp.Data
                 });
             }
         }
-        
+
         public static void SeedAdmin(UserManager<ApplicationUser> _manager)
         {
             if (_manager.FindByNameAsync("admin@mail.com").Result == null)
@@ -73,11 +72,8 @@ namespace BankApp.Data
                     {
                         _manager.AddToRoleAsync(user, UserRoles.User).Wait();
                     }
-
-                    cust.ApplicationUserId = user.Id;
                 }
             }
-
         }
     }
 }

@@ -39,6 +39,7 @@ namespace BankApp.Web.Api.Controllers
         }
 
         [HttpGet("accounttypes")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.User)]
         public IActionResult GetAccTypes()
         {
             return Ok(_admincervice.AccountTypes());
