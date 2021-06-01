@@ -23,14 +23,13 @@ namespace BankApp.Data.Contexts
         public virtual DbSet<Disposition> Dispositions { get; set; }
         public virtual DbSet<Loan> Loans { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
-        public virtual DbSet<InternalTransaction> InternalTransactions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=localhost;Database=BankAppData;Trusted_Connection=True");
+                optionsBuilder.UseSqlServer("Server=MONOLITH\\Ravenserver;Database=BankAppData;Trusted_Connection=True");
             }
         }
 
@@ -175,19 +174,6 @@ namespace BankApp.Data.Contexts
                     .HasForeignKey(d => d.AccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Loans_Accounts");
-            });
-
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
-
-            modelBuilder.Entity<InternalTransaction>(entity =>
-            {
-                entity.ToTable("InternalTransaction");
-
-                entity.Property(e => e.Amount).HasColumnType("decimal(13, 2)");
-
-                entity.Property(e => e.Balance).HasColumnType("decimal(13, 2)");
-
-                entity.Property(e => e.Date).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<Transaction>(entity =>

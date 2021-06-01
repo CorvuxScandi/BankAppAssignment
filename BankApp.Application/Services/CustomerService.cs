@@ -20,7 +20,6 @@ namespace BankApp.Application.Services
         public IRepository<Disposition> _dispositionRepo;
         public IRepository<Loan> _loanRepo;
         public IRepository<Transaction> _transactionRepo;
-        public IRepository<InternalTransaction> _internalTransactionRepo;
 
         public CustomerService(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo,
@@ -28,8 +27,7 @@ namespace BankApp.Application.Services
             IRepository<Customer> customerRepo,
             IRepository<Disposition> dispositionRepo,
             IRepository<Loan> loanRepo,
-            IRepository<Transaction> transactionRepo,
-            IRepository<InternalTransaction> internalTransactionRepo)
+            IRepository<Transaction> transactionRepo)
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -38,33 +36,43 @@ namespace BankApp.Application.Services
             _dispositionRepo = dispositionRepo;
             _loanRepo = loanRepo;
             _transactionRepo = transactionRepo;
-            _internalTransactionRepo = internalTransactionRepo;
         }
 
         public ApplicationResponce Addtransaction(InternalTransaction transaction)
         {
-            Transaction tran = new()
+            Account fromAccount = _accountRepo.GetById(transaction.FromAccount);
+            Account toAccount = _accountRepo.GetById(transaction.ToAccount);
+
+            Transaction transFrom = new()
             {
                 Account = "internal: " + transaction.ToAccount.ToString(),
                 AccountId = transaction.FromAccount,
                 Amount = transaction.Amount,
-                Balance = transaction.Balance,
+                Balance = fromAccount.Balance + transaction.Amount,
                 Date = transaction.Date,
                 Type = "Internal bank transaction"
             };
 
-            Account account = _accountRepo.GetById(transaction.FromAccount);
+            Transaction transTo = new()
+            {
+                Account = "internal: " + transaction.FromAccount.ToString(),
+                AccountId = transaction.ToAccount,
+                Amount = transaction.Amount,
+                Balance = toAccount.Balance + System.Math.Abs(transaction.Amount),
+                Date = transaction.Date,
+                Type = "Internal bank transaction"
+            };
 
-            account.Balance -= transaction.Amount;
+            fromAccount.Balance = transFrom.Balance;
+            toAccount.Balance = transTo.Balance;
 
-            _accountRepo.Update(account);
-            _accountRepo.Save();
-
-            _transactionRepo.Create(tran);
+            _transactionRepo.Create(transFrom);
+            _transactionRepo.Create(transTo);
             _transactionRepo.Save();
 
-            _internalTransactionRepo.Create(transaction);
-            _internalTransactionRepo.Save();
+            _accountRepo.Update(fromAccount);
+            _accountRepo.Update(toAccount);
+            _accountRepo.Save();
 
             return new()
             {

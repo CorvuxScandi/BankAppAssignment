@@ -24,7 +24,6 @@
     {
         newInternal.Date = DateTime.Now;
         newInternal.FromAccount = Account.AccountId;
-        newInternal.Balance = (Account.Balance - newInternal.Amount);
         services.InternalTransaction(newInternal);
     }
 }

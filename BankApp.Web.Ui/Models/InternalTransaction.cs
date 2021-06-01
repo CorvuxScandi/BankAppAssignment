@@ -9,7 +9,6 @@ namespace BankApp.Web.Ui.Models
     {
         public int FromAccount { get; set; }
         public decimal Amount { get; set; }
-        public decimal Balance { get; set; }
         public DateTime Date { get; set; }
         public int ToAccount { get; set; }
     }
