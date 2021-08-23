@@ -29,6 +29,13 @@ namespace BankApp.Web.Api
         {
             services.AddControllers();
             services.AddMvc();
+            services.AddCors(policy =>
+            {
+                policy.AddPolicy("CorsPolicy", opt => opt
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+            });
 
             services.AddDbContext<BankAppDataContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("Laptop")));
@@ -48,30 +55,29 @@ namespace BankApp.Web.Api
                   JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme =
                 JwtBearerDefaults.AuthenticationScheme;
-                
             }).AddJwtBearer(options =>
             {
-                    options.TokenValidationParameters =
-                    new TokenValidationParameters()
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
+                options.TokenValidationParameters =
+                new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
 
-                        ValidAudience = Configuration["JWT:ValidAudience"],
-                        ValidIssuer = Configuration["JWT:ValidIssuer"],
-                        IssuerSigningKey =
-                        new SymmetricSecurityKey
-                    (Encoding.UTF8.GetBytes(Configuration["JWT:securityKey"]))
-                    };
+                    ValidAudience = Configuration["JWT:ValidAudience"],
+                    ValidIssuer = Configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey =
+                    new SymmetricSecurityKey
+                (Encoding.UTF8.GetBytes(Configuration["JWT:securityKey"]))
+                };
             });
 
             RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             UserManager<ApplicationUser> user, BankAppDataContext context, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())

@@ -58,9 +58,9 @@ namespace BankApp.Web.Api.Controllers
         }
 
         [HttpPost("newcostumer")]
-        public async Task<IActionResult> NewCostumer([FromBody] RegisterModel customerModel)
+        public IActionResult NewCostumer([FromBody] RegisterModel customerModel)
         {
-            var result = await _admincervice.AddNewCustomerProfile(customerModel);
+            var result = _admincervice.AddNewCustomerProfile(customerModel);
 
             if (result.ResponceCode < 300) return Ok();
             return BadRequest();

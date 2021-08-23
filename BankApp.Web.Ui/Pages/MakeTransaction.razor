@@ -1,4 +1,4 @@
-﻿@page "/makeinternaltransaction{Account}"
+﻿@page "/makeinternaltransaction"
 @attribute [Authorize(Roles = "User")]
 @inject CustomerServices services
 
@@ -15,15 +15,12 @@
 
 @code {
 
-    [Parameter]
-    public AccountDTO Account { get; init; }
-
-    private InternalTransaction newInternal;
+    private InternalTransaction newInternal = new();
 
     private void transaction()
     {
         newInternal.Date = DateTime.Now;
-        newInternal.FromAccount = Account.AccountId;
+        newInternal.FromAccount = services.Account.AccountId;
         services.InternalTransaction(newInternal);
     }
 }

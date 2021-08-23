@@ -1,5 +1,17 @@
 ﻿@page "/"
+@inject HttpClient _client
 
 <h1>Hello, world!</h1>
 
+<p>@baseAdress</p>
 
+@code {
+
+    private string baseAdress { get; set; }
+
+    protected override void OnInitialized()
+    {
+        baseAdress = _client.BaseAddress.OriginalString;
+    }
+
+}

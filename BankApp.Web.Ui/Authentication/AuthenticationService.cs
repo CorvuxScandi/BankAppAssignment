@@ -30,8 +30,8 @@ namespace BankApp.Web.Ui.Authentication
         {
             var content = JsonSerializer.Serialize(authenticationModel);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-
-            var authResult = await _client.PostAsync("https://localhost:5008/api/authentication/login", bodyContent);
+            string url = "https://localhost:5001/";
+            var authResult = await _client.PostAsync("api/authentication/login", bodyContent);
             var authContent = await authResult.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             if (!authResult.IsSuccessStatusCode)

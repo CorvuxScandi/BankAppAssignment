@@ -19,7 +19,7 @@ namespace BankApp.Application.Interfaces
 
         ApplicationResponce AddLoan(LoanDTO loan);
 
-        Task<ApplicationResponce> AddNewCustomerProfile(RegisterModel customerModel);
+        ApplicationResponce AddNewCustomerProfile(RegisterModel customerModel);
 
         Task<ApplicationResponce> UpdateUserLogin(RegisterModel registerModel);
     }

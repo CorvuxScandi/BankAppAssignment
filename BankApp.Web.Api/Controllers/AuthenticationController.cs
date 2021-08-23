@@ -33,6 +33,12 @@ namespace BankApp.Web.Api.Controllers
             _configuration = configuration;
         }
 
+        //[HttpPost("test")]
+        //public async Task<IActionResult> TestLogin([FromBody] AuthenticationUserModel model)
+        //{
+        //    return model;
+        //}
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] AuthenticationUserModel model)
         {
@@ -62,15 +68,15 @@ namespace BankApp.Web.Api.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
 
-                return Ok(new
+                return Ok(new AuthenticatedUserModel()
                 {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    Authenticaded = true,
+                    ErrorMessage = ""
                 });
             }
-            return Unauthorized(new AuthenticatedUserModel {ErrorMessage = "Invalid login" });
+            return Unauthorized(new AuthenticatedUserModel { ErrorMessage = "Invalid login" });
         }
-
 
         [HttpPost("newIdentity")]
         [Authorize(Roles = UserRoles.Admin)]
@@ -84,22 +90,18 @@ namespace BankApp.Web.Api.Controllers
             {
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString()
-                
             };
             var result = await _userManager.CreateAsync(user, "!Sunshine1");
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new { ResponceCode = 400, ResponceText = "User creation failed! Please check user details and try again." });
 
-            
             if (model.NewAdmin)
             {
                 await _userManager.AddToRoleAsync(user, UserRoles.Admin);
             }
             await _userManager.AddToRoleAsync(user, UserRoles.User);
- 
+
             return Ok(new ApplicationResponce { ResponceCode = 201, ResponceText = "User created successfully!" });
         }
-
-        
     }
 }

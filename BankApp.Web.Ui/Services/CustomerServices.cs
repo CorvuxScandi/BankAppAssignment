@@ -1,17 +1,15 @@
 ﻿using BankApp.Web.Ui.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace BankApp.Web.Ui.Services
 {
-    public class CustomerServices
+    public class CustomerServices : ICustomerServices
     {
         private readonly HttpClient _httpClient;
-
+        public AccountDTO Account { get; set; }
         public CustomerDetails CustomerInfo { get; private set; }
         public List<TransferDTO> Transactions { get; private set; }
 
@@ -33,9 +31,15 @@ namespace BankApp.Web.Ui.Services
             StateChanged();
         }
 
-        public async void GetTransactions(int accountId)
+        public async void GetTransactions()
         {
-            Transactions = await _httpClient.GetFromJsonAsync<List<TransferDTO>>("api/customer/accounts?id=" + accountId);
+            Transactions = await _httpClient.GetFromJsonAsync<List<TransferDTO>>("api/customer/accounts?id=" + Account.AccountId);
+            StateChanged();
+        }
+
+        public void SelectedAccount(int accountId)
+        {
+            Account = CustomerInfo.Accounts.Find(a => a.AccountId == accountId);
             StateChanged();
         }
 

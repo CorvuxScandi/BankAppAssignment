@@ -94,10 +94,8 @@ namespace BankApp.Application.Services
             };
         }
 
-        public async Task<ApplicationResponce> AddNewCustomerProfile(RegisterModel model)
+        public ApplicationResponce AddNewCustomerProfile(RegisterModel model)
         {
-            
-
             Customer newC = CustomMapper.MapDTO<CustomerDTO, Customer>(model.Customer);
             Account newA = CustomMapper.MapDTO<AccountDTO, Account>(model.Account);
             newA.Created = DateTime.Today;

@@ -1,7 +1,6 @@
-﻿@page "/transactions/{Id:int}"
+﻿@page "/transactions"
 @inject CustomerServices services
 @attribute [Authorize(Roles = "User")]
-
 <div>
     <ol>
         @foreach (var t in services.Transactions)
@@ -23,7 +22,7 @@
 
     protected override void OnInitialized()
     {
-        services.GetTransactions(Id);
+        services.GetTransactions();
     }
 
 }
