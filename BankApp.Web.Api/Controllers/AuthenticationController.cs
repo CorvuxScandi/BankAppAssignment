@@ -1,6 +1,4 @@
-﻿using BankApp.Application.ApiModels;
-using BankApp.Domain.DomainModels;
-using BankApp.Domain.IdentityModels;
+﻿using BankApp.Domain.IdentityModels;
 using BankApp.Web.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -39,69 +37,69 @@ namespace BankApp.Web.Api.Controllers
         //    return model;
         //}
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] AuthenticationUserModel model)
-        {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
-            {
-                var userRoles = await _userManager.GetRolesAsync(user);
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login(AuthenticationDTO model)
+        //{
+        //    var user = await _userManager.FindByEmailAsync(model.Email);
+        //    if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        //    {
+        //        var userRoles = await _userManager.GetRolesAsync(user);
 
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+        //        var authClaims = new List<Claim>
+        //        {
+        //            new Claim(ClaimTypes.Email, user.Email),
+        //            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        //        };
 
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
+        //        foreach (var userRole in userRoles)
+        //        {
+        //            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+        //        }
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:securityKey"]));
+        //        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:securityKey"]));
 
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["JWT:expiryInMinutes"])),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
+        //        var token = new JwtSecurityToken(
+        //            issuer: _configuration["JWT:ValidIssuer"],
+        //            audience: _configuration["JWT:ValidAudience"],
+        //            expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["JWT:expiryInMinutes"])),
+        //            claims: authClaims,
+        //            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+        //            );
 
-                return Ok(new AuthenticatedUserModel()
-                {
-                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                    Authenticaded = true,
-                    ErrorMessage = ""
-                });
-            }
-            return Unauthorized(new AuthenticatedUserModel { ErrorMessage = "Invalid login" });
-        }
+        //        return Ok(new AuthenticatedUserModel()
+        //        {
+        //            AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+        //            Authenticaded = true,
+        //            ErrorMessage = ""
+        //        });
+        //    }
+        //    return Unauthorized(new AuthenticatedUserModel { ErrorMessage = "Invalid login" });
+        //}
 
-        [HttpPost("newIdentity")]
-        [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> CreateIdentity([FromBody] IdentityRegModel model)
-        {
-            var userExists = await _userManager.FindByNameAsync(model.Email);
-            if (userExists != null)
-                return BadRequest(new ApplicationResponce { ResponceCode = 409, ResponceText = "User already exists!" });
+        //[HttpPost("newIdentity")]
+        //[Authorize(Roles = UserRoles.Admin)]
+        //public async Task<IActionResult> CreateIdentity([FromBody] IdentityRegModel model)
+        //{
+        //    var userExists = await _userManager.FindByNameAsync(model.Email);
+        //    if (userExists != null)
+        //        return BadRequest(new ApplicationResponce { ResponceCode = 409, ResponceText = "User already exists!" });
 
-            ApplicationUser user = new()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString()
-            };
-            var result = await _userManager.CreateAsync(user, "!Sunshine1");
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new { ResponceCode = 400, ResponceText = "User creation failed! Please check user details and try again." });
+        //    ApplicationUser user = new()
+        //    {
+        //        Email = model.Email,
+        //        SecurityStamp = Guid.NewGuid().ToString()
+        //    };
+        //    var result = await _userManager.CreateAsync(user, "!Sunshine1");
+        //    if (!result.Succeeded)
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new { ResponceCode = 400, ResponceText = "User creation failed! Please check user details and try again." });
 
-            if (model.NewAdmin)
-            {
-                await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-            }
-            await _userManager.AddToRoleAsync(user, UserRoles.User);
+        //    if (model.NewAdmin)
+        //    {
+        //        await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+        //    }
+        //    await _userManager.AddToRoleAsync(user, UserRoles.User);
 
-            return Ok(new ApplicationResponce { ResponceCode = 201, ResponceText = "User created successfully!" });
-        }
+        //    return Ok(new ApplicationResponce { ResponceCode = 201, ResponceText = "User created successfully!" });
+        //}
     }
 }

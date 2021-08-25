@@ -1,15 +1,14 @@
-﻿using BankApp.Application.ApiModels;
-using BankApp.Application.Interfaces;
+﻿using BankApp.Application.Interfaces;
 using BankApp.Application.Tools;
-using BankApp.Domain.DomainModels;
 using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
+using BankApp.Enteties.DataTransferObjects;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using BankApp.Enteties.Models.RequestFeatures;
 using System.Threading.Tasks;
 
 namespace BankApp.Application.Services
@@ -44,27 +43,14 @@ namespace BankApp.Application.Services
 
         #endregion classStart
 
-        public ApplicationResponce AddAccountType(AccountType accountType)
+        public void AddAccountType(AccountTypeDTO accountType)
         {
-            _TypeRepo.Create(accountType);
-            int changedElements = _TypeRepo.Save();
-            if (changedElements > 0)
-            {
-                return new()
-                {
-                    ResponceCode = 200
-                };
-            }
-            else
-            {
-                return new()
-                {
-                    ResponceCode = 400
-                };
-            }
+            AccountType newType = CustomMapper.ReveceMap<AccountTypeDTO, AccountType>(accountType);
+            _TypeRepo.Create(newType);
+            _TypeRepo.Save();
         }
 
-        public ApplicationResponce AddLoan(LoanDTO loan)
+        public void AddLoan(LoanDTO loan)
         {
             var newLoan = CustomMapper.ReveceMap<LoanDTO, Loan>(loan);
             var account = _accountRepo.GetById(loan.AccountId);
@@ -85,78 +71,76 @@ namespace BankApp.Application.Services
 
             _accountRepo.Save();
             _transaction.Save();
-            var result = _loanRepo.Save();
-            if (result > 0) return new() { ResponceCode = 200 };
-            return new()
-            {
-                ResponceCode = 500,
-                ResponceText = "Unknown server error"
-            };
+            _loanRepo.Save();
         }
 
-        public ApplicationResponce AddNewCustomerProfile(RegisterModel model)
+        public void AddNewCustomerProfile(RegisterCustomerDTO customerModel)
         {
-            Customer newC = CustomMapper.MapDTO<CustomerDTO, Customer>(model.Customer);
-            Account newA = CustomMapper.MapDTO<AccountDTO, Account>(model.Account);
-            newA.Created = DateTime.Today;
+            Customer newC = CustomMapper.MapDTO<CustomerDTO, Customer>(customerModel.Customer);
+            Account newA = new()
+            {
+                Created = DateTime.Today,
+                Balance = 0,
+                AccountTypesId = customerModel.Account.AccountTypesId,
+                Frequency = customerModel.Account.Frequency,
+            };
 
-            //Repo create and save
             _customerRepo.Create(newC);
             _accountRepo.Create(newA);
+
+            Disposition newDispo = new()
+            {
+                CustomerId = newC.CustomerId,
+                AccountId = newA.AccountId
+            };
+
+            //Repo create and save
+
+            _dispositionRepo.Create(newDispo);
+
+            _dispositionRepo.Save();
             _customerRepo.Save();
             _accountRepo.Save();
-
-            _dispositionRepo.Create(new()
-            {
-                AccountId = newA.AccountId,
-                CustomerId = newC.CustomerId
-            });
-
-            if (_dispositionRepo.Save() < 0) return new() { ResponceCode = 500 };
-
-            return new()
-            {
-                ResponceCode = 200
-            };
         }
 
         public List<AccountDTO> GetCustomerAccounts(int id)
         {
             var dispositions = _dispositionRepo.GetAll().Where(x => x.CustomerId == id);
+
             List<AccountDTO> accounts = new();
+
             foreach (var dis in dispositions)
             {
                 var account = CustomMapper.MapDTO<Account, AccountDTO>(_accountRepo.GetById(dis.AccountId));
-                account.AccountType = dis.Account.AccountTypes.TypeName;
                 accounts.Add(account);
             }
+
             return accounts;
         }
 
-        public List<CustomerDTO> GetCostummers()
+        public async Task<PagedList<CustomerDTO>> GetCustomers(CustomerParameters parameters)
         {
-            var result = _customerRepo.GetAll().ToList();
-            List<CustomerDTO> list = new();
-            foreach (var item in result)
+            var customers = _customerRepo.GetAll().OrderBy(c => c.Surname).ToList();
+            List<CustomerDTO> dtoList = new();
+            foreach (var item in customers)
             {
-                list.Add(CustomMapper.MapDTO<Customer, CustomerDTO>(item));
+                dtoList.Add(CustomMapper.MapDTO<Customer, CustomerDTO>(item));
             }
-            return list;
+            return PagedList<CustomerDTO>.ToPagedList(dtoList, parameters.PageNumber, parameters.PageSize);
         }
 
-        public ApplicationResponce GetCustomerProfile(int id)
+        public List<AccountTypeDTO> GetAccountTypes()
         {
-            throw new NotImplementedException();
-        }
+            var types = _TypeRepo.GetAll();
 
-        public Task<ApplicationResponce> UpdateUserLogin(RegisterModel registerModel)
-        {
-            throw new NotImplementedException();
-        }
+            List<AccountTypeDTO> typeList = new();
 
-        public List<AccountType> AccountTypes()
-        {
-            return _TypeRepo.GetAll().ToList();
+            foreach (var type in types)
+            {
+                typeList.Add(CustomMapper.MapDTO<AccountType, AccountTypeDTO>(type));
+            }
+
+            return typeList;
         }
     }
 }

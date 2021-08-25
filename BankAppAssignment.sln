@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BankApp.Web.Api", "BankApp.Web.Api", "{271C87BF-4FC2-4085-B8F8-0789631828A1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BankApp.Application", "BankApp.Application", "{4A76A5C9-CFCE-4FFE-AD2F-EBA52EFF72B9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BankApp.ApplicationLogic", "BankApp.ApplicationLogic", "{4A76A5C9-CFCE-4FFE-AD2F-EBA52EFF72B9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BankApp.Domain", "BankApp.Domain", "{41457137-BA53-4112-AB00-34DCCB111C84}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BankApp.Enteties", "BankApp.Enteties", "{41457137-BA53-4112-AB00-34DCCB111C84}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bankApp.Infrastructure.Data", "bankApp.Infrastructure.Data", "{86ECDD39-F73D-4E4F-9D30-2025D210C3C1}"
 EndProject
@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Data", "BankApp.Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Web.Api", "BankApp.Web.Api\BankApp.Web.Api.csproj", "{EEEF3155-DB04-425F-87F0-769E130FF14A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Domain", "BankApp.Domain\BankApp.Domain.csproj", "{48A216DE-82B3-48ED-B84F-7EF7476905E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Enteties", "BankApp.Domain\BankApp.Enteties.csproj", "{48A216DE-82B3-48ED-B84F-7EF7476905E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApp.Application", "BankApp.Application\BankApp.Application.csproj", "{659B7216-DF26-4ADA-AFEB-8A9793CEF928}"
 EndProject

@@ -17,7 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BankApp.Application\BankApp.Application.csproj" />
     <ProjectReference Include="..\BankApp.Data\BankApp.Data.csproj" />
-    <ProjectReference Include="..\BankApp.Domain\BankApp.Domain.csproj" />
+    <ProjectReference Include="..\BankApp.Domain\BankApp.Enteties.csproj" />
     <ProjectReference Include="..\BankApp.Infrastructure.IoC\BankApp.Infrastructure.IoC.csproj" />
   </ItemGroup>
 

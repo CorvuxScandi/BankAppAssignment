@@ -1,7 +1,5 @@
-﻿using BankApp.Application.ApiModels;
-using BankApp.Domain.DomainModels;
-using BankApp.Domain.IdentityModels;
-using BankApp.Domain.Models;
+﻿using BankApp.Enteties.DataTransferObjects;
+using BankApp.Enteties.Models.RequestFeatures;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,18 +7,16 @@ namespace BankApp.Application.Interfaces
 {
     public interface IAdminService
     {
-        ApplicationResponce AddAccountType(AccountType accountType);
+        void AddAccountType(AccountTypeDTO accountType);
 
-        List<AccountType> AccountTypes();
+        List<AccountTypeDTO> GetAccountTypes();
 
-        List<CustomerDTO> GetCostummers();
+        Task<PagedList<CustomerDTO>> GetCustomers(CustomerParameters parameters);
 
         List<AccountDTO> GetCustomerAccounts(int id);
 
-        ApplicationResponce AddLoan(LoanDTO loan);
+        void AddLoan(LoanDTO loan);
 
-        ApplicationResponce AddNewCustomerProfile(RegisterModel customerModel);
-
-        Task<ApplicationResponce> UpdateUserLogin(RegisterModel registerModel);
+        void AddNewCustomerProfile(RegisterCustomerDTO customerModel);
     }
 }

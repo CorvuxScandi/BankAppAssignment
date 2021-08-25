@@ -1,16 +1,16 @@
-﻿using BankApp.Application.ApiModels;
-using BankApp.Domain.DomainModels;
-using BankApp.Domain.Models;
+﻿using BankApp.Domain.Models;
+using BankApp.Enteties.DataTransferObjects;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BankApp.Application.Interfaces
 {
     public interface ICustomerService
     {
-        ApplicationResponce GetCustomerInfo(string email);
+        CustomerInfoDTO GetCustomerInfo(int id);
 
-        ApplicationResponce Addtransaction(InternalTransaction transaction);
+        void Addtransaction(InternalTransaction transaction);
 
-        ApplicationResponce GetTransactions(int accountId);
+        List<TransactionDTO> GetTransactions(int accountId);
     }
 }

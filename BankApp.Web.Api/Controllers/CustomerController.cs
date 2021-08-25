@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace BankApp.Web.Api.Controllers
 {
-    [Authorize(Roles = UserRoles.User)]
-    [Route("api/[controller]")]
+    // [Authorize(Roles = UserRoles.User)]
+    [Route("api/customer")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -26,15 +26,12 @@ namespace BankApp.Web.Api.Controllers
         }
 
         // GET api/<ValuesController>/5
-        [HttpGet("profile")]
-        public IActionResult Get()
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
         {
-            var currentUserEmail = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "Email").Value;
+            var customerInfo = _customerService.GetCustomerInfo(id);
 
-            var responce = _customerService.GetCustomerInfo(currentUserEmail);
-            var customerInfo = responce.ResponceBody;
-            if (responce.ResponceCode < 300) return Ok(customerInfo);
-            return BadRequest();
+            return Ok(customerInfo);
         }
 
         [HttpGet("accounts")]
@@ -42,17 +39,16 @@ namespace BankApp.Web.Api.Controllers
         {
             var responce = _customerService.GetTransactions(id);
 
-            if (responce.ResponceCode < 300) return Ok(responce.ResponceBody);
-            return BadRequest();
+            return Ok(responce);
         }
 
         // POST api/<ValuesController>
-        [HttpPost("internal")]
+        [HttpPost("transaction")]
         public IActionResult Post([FromBody] InternalTransaction transaction)
         {
-            var result = _customerService.Addtransaction(transaction);
-            if (result.ResponceCode < 300) return Ok();
-            return BadRequest();
+            _customerService.Addtransaction(transaction);
+
+            return Ok();
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using BankApp.Application.ApiModels;
 using BankApp.Application.Interfaces;
 using BankApp.Application.Tools;
-using BankApp.Domain.DomainModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
+using BankApp.Enteties.DataTransferObjects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,7 +37,7 @@ namespace BankApp.Application.Services
             _transactionRepo = transactionRepo;
         }
 
-        public ApplicationResponce Addtransaction(InternalTransaction transaction)
+        public void Addtransaction(InternalTransaction transaction)
         {
             Account fromAccount = _accountRepo.GetById(transaction.FromAccount);
             Account toAccount = _accountRepo.GetById(transaction.ToAccount);
@@ -73,24 +72,18 @@ namespace BankApp.Application.Services
             _accountRepo.Update(fromAccount);
             _accountRepo.Update(toAccount);
             _accountRepo.Save();
-
-            return new()
-            {
-                ResponceCode = 202,
-                ResponceText = "Succsess"
-            };
         }
 
-        public ApplicationResponce GetCustomerInfo(string email)
+        public CustomerInfoDTO GetCustomerInfo(int id)
         {
-            var customer = _customerRepo.GetAll().FirstOrDefault(x => x.Emailaddress == email);
+            var customer = _customerRepo.GetAll().FirstOrDefault(x => x.CustomerId == id);
 
             var CustomerDispositions =
                 _dispositionRepo
                 .GetAll()
-                .Where(x => x.CustomerId == customer.CustomerId);
+                .Where(x => x.CustomerId == id);
 
-            CustomerDetails bankCustomer = new()
+            CustomerInfoDTO customerInfo = new()
             {
                 CustomerInfo = CustomMapper.MapDTO<Customer, CustomerDTO>(customer)
             };
@@ -98,53 +91,37 @@ namespace BankApp.Application.Services
             foreach (var item in CustomerDispositions)
             {
                 //Mapps customer into API model
-                bankCustomer.Accounts
+                customerInfo.Accounts
                     .Add(CustomMapper.MapDTO<Account, AccountDTO>(item.Account));
 
                 //Mapps each card that the customer posesses into the API model
                 foreach (var card in item.Cards)
                 {
-                    bankCustomer.Cards.Add(CustomMapper.MapDTO<Card, CardDTO>(card));
+                    customerInfo.Cards.Add(CustomMapper.MapDTO<Card, CardDTO>(card));
                 };
 
                 //Mapps all loans the customer have into the API model
                 foreach (var loan in item.Account.Loans)
                 {
-                    bankCustomer.Loans.Add(CustomMapper.MapDTO<Loan, LoanDTO>(loan));
+                    customerInfo.Loans.Add(CustomMapper.MapDTO<Loan, LoanDTO>(loan));
                 }
             }
 
-            return new()
-            {
-                ResponceCode = 200,
-                ResponceBody = bankCustomer
-            };
+            return customerInfo;
         }
 
-        public ApplicationResponce GetTransactions(int accountID)
+        public List<TransactionDTO> GetTransactions(int accountID)
         {
             var account = _accountRepo.GetById(accountID);
-            if (account is null)
-            {
-                return new()
-                {
-                    ResponceCode = 404,
-                    ResponceText = "Account not found"
-                };
-            };
 
-            List<TransferDTO> transactions = new();
+            List<TransactionDTO> transactions = new();
 
             foreach (var transfer in account.Transactions)
             {
-                transactions.Add(CustomMapper.MapDTO<Transaction, TransferDTO>(transfer));
+                transactions.Add(CustomMapper.MapDTO<Transaction, TransactionDTO>(transfer));
             }
 
-            return new()
-            {
-                ResponceCode = 200,
-                ResponceBody = transactions
-            };
+            return transactions;
         }
     }
 }
