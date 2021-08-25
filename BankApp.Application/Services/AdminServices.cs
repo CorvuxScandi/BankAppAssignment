@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BankApp.Enteties.Models.RequestFeatures;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace BankApp.Application.Services
 {
@@ -25,11 +26,13 @@ namespace BankApp.Application.Services
         private IRepository<Loan> _loanRepo;
         private UserManager<ApplicationUser> _userManager;
         private IRepository<Transaction> _transaction;
+        private readonly IMapper _mapper;
+
 
         public AdminServices(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo, IRepository<Card> cardRepo,
             IRepository<Customer> customerRepo, IRepository<Disposition> dispositionRepo,
-            IRepository<Loan> loanRepo, UserManager<ApplicationUser> userManager, IRepository<Transaction> transaction)
+            IRepository<Loan> loanRepo, UserManager<ApplicationUser> userManager, IRepository<Transaction> transaction, IMapper mapper)
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -39,24 +42,23 @@ namespace BankApp.Application.Services
             _loanRepo = loanRepo;
             _userManager = userManager;
             _transaction = transaction;
+            _mapper = mapper;
         }
 
         #endregion classStart
 
-        public void AddAccountType(AccountTypeDTO accountType)
+        public void AddAccountType(AccountType accountType)
         {
-            AccountType newType = CustomMapper.ReveceMap<AccountTypeDTO, AccountType>(accountType);
-            _TypeRepo.Create(newType);
+            _TypeRepo.Create(accountType);
             _TypeRepo.Save();
         }
 
-        public void AddLoan(LoanDTO loan)
+        public void AddLoan(Loan loan)
         {
-            var newLoan = CustomMapper.ReveceMap<LoanDTO, Loan>(loan);
             var account = _accountRepo.GetById(loan.AccountId);
             account.Balance += loan.Amount;
             _accountRepo.Update(account);
-            _loanRepo.Create(newLoan);
+            _loanRepo.Create(loan);
 
             Transaction t = new()
             {
@@ -103,44 +105,36 @@ namespace BankApp.Application.Services
             _accountRepo.Save();
         }
 
-        public List<AccountDTO> GetCustomerAccounts(int id)
+        public List<Account> GetCustomerAccounts(int id)
         {
             var dispositions = _dispositionRepo.GetAll().Where(x => x.CustomerId == id);
 
-            List<AccountDTO> accounts = new();
+            List<Account> accounts = new();
 
             foreach (var dis in dispositions)
             {
-                var account = CustomMapper.MapDTO<Account, AccountDTO>(_accountRepo.GetById(dis.AccountId));
+                var account = _accountRepo.GetById(dis.AccountId);
                 accounts.Add(account);
             }
 
             return accounts;
         }
 
-        public async Task<PagedList<CustomerDTO>> GetCustomers(CustomerParameters parameters)
+        public async Task<PagedList<Customer>> GetCustomers(CustomerParameters parameters)
         {
             var customers = _customerRepo.GetAll().OrderBy(c => c.Surname).ToList();
-            List<CustomerDTO> dtoList = new();
-            foreach (var item in customers)
-            {
-                dtoList.Add(CustomMapper.MapDTO<Customer, CustomerDTO>(item));
-            }
-            return PagedList<CustomerDTO>.ToPagedList(dtoList, parameters.PageNumber, parameters.PageSize);
+            
+
+            return PagedList<Customer>.ToPagedList(customers, parameters.PageNumber, parameters.PageSize);
         }
 
-        public List<AccountTypeDTO> GetAccountTypes()
+        public List<AccountType> GetAccountTypes()
         {
-            var types = _TypeRepo.GetAll();
+            var types = _TypeRepo.GetAll().ToList();
 
-            List<AccountTypeDTO> typeList = new();
+            
 
-            foreach (var type in types)
-            {
-                typeList.Add(CustomMapper.MapDTO<AccountType, AccountTypeDTO>(type));
-            }
-
-            return typeList;
+            return types;
         }
     }
 }

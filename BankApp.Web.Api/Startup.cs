@@ -39,6 +39,8 @@ namespace BankApp.Web.Api
             services.ConfigureIdentity();
 
             RegisterServices(services);
+            services.AddAutoMapper(typeof(Startup));
+
 
             //services.AddAuthentication(options =>
             //{
@@ -95,7 +97,7 @@ namespace BankApp.Web.Api
                 endpoints.MapControllers();
             });
 
-            InitiateAccounts.SeedData(user, roleManager, context);
+            //InitiateAccounts.SeedData(user, roleManager, context);
         }
 
         private static void RegisterServices(IServiceCollection services)

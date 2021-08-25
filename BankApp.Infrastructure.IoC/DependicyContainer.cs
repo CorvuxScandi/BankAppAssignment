@@ -21,6 +21,7 @@ namespace BankApp.Infrastructure.IoC
             services.AddScoped<IRepository<Loan>, LoanRepository>();
             services.AddScoped<IRepository<Transaction>, TransactionRepository>();
 
+
         }
     }
 }

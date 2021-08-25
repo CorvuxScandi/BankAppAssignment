@@ -1,12 +1,15 @@
-﻿using BankApp.Application.Interfaces;
-using BankApp.Enteties.DataTransferObjects;
+﻿using AutoMapper;
+using BankApp.Application.Interfaces;
+using BankApp.Application.Tools;
 using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
+using BankApp.Enteties.DataTransferObjects;
+using BankApp.Enteties.Models.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using BankApp.Enteties.Models.RequestFeatures;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BankApp.Web.Api.Controllers
 {
@@ -16,10 +19,12 @@ namespace BankApp.Web.Api.Controllers
     public class AdminController : ControllerBase
     {
         private IAdminService _admincervice;
+        private readonly IMapper _mapper;
 
-        public AdminController(IAdminService admincervice)
+        public AdminController(IAdminService admincervice, IMapper mapper)
         {
             _admincervice = admincervice;
+            _mapper = mapper;
         }
 
         // GET: api/<AdminController>
@@ -30,7 +35,9 @@ namespace BankApp.Web.Api.Controllers
 
             Response.Headers.Add("X-Pagnation", JsonConvert.SerializeObject(result.MetaData));
 
-            return Ok(result);
+            var dto = _mapper.Map<IEnumerable<CustomerDTO>>(result);
+
+            return Ok(dto);
         }
 
         [HttpGet("{id}")]
@@ -51,7 +58,7 @@ namespace BankApp.Web.Api.Controllers
 
         // POST api/<AdminController>
         [HttpPost("newloan")]
-        public IActionResult NewLoan([FromBody] LoanDTO loan)
+        public IActionResult NewLoan([FromBody]Loan loan)
         {
             if (loan != null)
             {

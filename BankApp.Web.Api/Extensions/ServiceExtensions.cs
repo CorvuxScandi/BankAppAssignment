@@ -27,11 +27,11 @@ namespace BankApp.Web.Api.Extensions
 
         public static void ConfigureDataContext(this IServiceCollection services, IConfiguration configuration) =>
             services.AddDbContext<BankAppDataContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("Database")));
+            options.UseSqlServer(configuration.GetConnectionString("Laptop")));
 
         public static void ConfigureIdentityContext(this IServiceCollection services, IConfiguration configuration) =>
         services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(configuration.GetConnectionString("Authentication"),
+        options.UseSqlServer(configuration.GetConnectionString("AuthLaptop"),
         m => m.MigrationsAssembly("BankApp.Domain")));
 
         public static void ConfigureIdentity(this IServiceCollection services) =>

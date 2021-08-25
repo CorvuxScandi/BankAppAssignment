@@ -19,14 +19,14 @@ namespace BankApp.Data
 
         public static void SeedRoles(RoleManager<IdentityRole> _roleManager)
         {
-            if (!_roleManager.RoleExistsAsync("Admin").Result)
+            if (!_roleManager.RoleExistsAsync(UserRoles.Admin).Result)
             {
                 _ = _roleManager.CreateAsync(new()
                 {
                     Name = UserRoles.Admin
                 });
             }
-            if (!_roleManager.RoleExistsAsync("User").Result)
+            if (!_roleManager.RoleExistsAsync(UserRoles.User).Result)
             {
                 _ = _roleManager.CreateAsync(new()
                 {
