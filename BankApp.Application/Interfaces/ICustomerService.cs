@@ -1,7 +1,6 @@
 ﻿using BankApp.Domain.Models;
 using BankApp.Enteties.DataTransferObjects;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using BankApp.Enteties.Models.RequestFeatures;
 
 namespace BankApp.Application.Interfaces
 {
@@ -11,6 +10,6 @@ namespace BankApp.Application.Interfaces
 
         void Addtransaction(InternalTransaction transaction);
 
-        List<TransactionDTO> GetTransactions(int accountId);
+        PagedList<TransactionDTO> GetTransactions(TransactionParameters parameters);
     }
 }

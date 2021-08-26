@@ -1,16 +1,15 @@
-﻿using BankApp.Application.Interfaces;
+﻿using AutoMapper;
+using BankApp.Application.Interfaces;
 using BankApp.Application.Tools;
 using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
 using BankApp.Enteties.DataTransferObjects;
+using BankApp.Enteties.Models.RequestFeatures;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BankApp.Enteties.Models.RequestFeatures;
-using System.Threading.Tasks;
-using AutoMapper;
 
 namespace BankApp.Application.Services
 {
@@ -27,7 +26,6 @@ namespace BankApp.Application.Services
         private UserManager<ApplicationUser> _userManager;
         private IRepository<Transaction> _transaction;
         private readonly IMapper _mapper;
-
 
         public AdminServices(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo, IRepository<Card> cardRepo,
@@ -105,36 +103,51 @@ namespace BankApp.Application.Services
             _accountRepo.Save();
         }
 
-        public List<Account> GetCustomerAccounts(int id)
+        public List<AccountDTO> GetCustomerAccounts(int id)
         {
             var dispositions = _dispositionRepo.GetAll().Where(x => x.CustomerId == id);
 
-            List<Account> accounts = new();
+            List<AccountDTO> accounts = new();
 
             foreach (var dis in dispositions)
             {
                 var account = _accountRepo.GetById(dis.AccountId);
-                accounts.Add(account);
+                accounts.Add(CustomMapper.MapDTO<Account, AccountDTO>(account));
             }
 
             return accounts;
         }
 
-        public async Task<PagedList<Customer>> GetCustomers(CustomerParameters parameters)
+        public PagedList<CustomerDTO> GetCustomers(CustomerParameters parameters)
         {
-            var customers = _customerRepo.GetAll().OrderBy(c => c.Surname).ToList();
-            
+            var customers = _customerRepo.GetAll()
+                .OrderBy(c => c.Surname)
+                .Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                .Take(parameters.PageSize)
+                .ToList();
 
-            return PagedList<Customer>.ToPagedList(customers, parameters.PageNumber, parameters.PageSize);
+            List<CustomerDTO> customersDTO = new();
+
+            foreach (var customer in customers)
+            {
+                customersDTO.Add(CustomMapper.MapDTO<Customer, CustomerDTO>(customer));
+            }
+
+            return new PagedList<CustomerDTO>(customersDTO, customersDTO.Count, parameters.PageNumber, parameters.PageSize);
         }
 
-        public List<AccountType> GetAccountTypes()
+        public List<AccountTypeDTO> GetAccountTypes()
         {
             var types = _TypeRepo.GetAll().ToList();
 
-            
+            List<AccountTypeDTO> typesDTO = new();
 
-            return types;
+            foreach (var type in types)
+            {
+                typesDTO.Add(CustomMapper.MapDTO<AccountType, AccountTypeDTO>(type));
+            }
+
+            return typesDTO;
         }
     }
 }

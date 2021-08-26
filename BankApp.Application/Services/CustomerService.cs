@@ -1,12 +1,11 @@
-﻿using AutoMapper;
-using BankApp.Application.Interfaces;
+﻿using BankApp.Application.Interfaces;
 using BankApp.Application.Tools;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
 using BankApp.Enteties.DataTransferObjects;
+using BankApp.Enteties.Models.RequestFeatures;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BankApp.Application.Services
 {
@@ -110,18 +109,23 @@ namespace BankApp.Application.Services
             return customerInfo;
         }
 
-        public List<TransactionDTO> GetTransactions(int accountID)
+        public PagedList<TransactionDTO> GetTransactions(TransactionParameters parameters)
         {
-            var account = _accountRepo.GetById(accountID);
+            var account = _accountRepo.GetById(parameters.AccountId);
 
-            List<TransactionDTO> transactions = new();
+            List<TransactionDTO> transactionsDTO = new();
 
-            foreach (var transfer in account.Transactions)
+            var transactions = account.Transactions
+                .OrderBy(t => t.Date)
+                .Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                .Take(parameters.PageSize).ToList();
+
+            foreach (var transfer in transactions)
             {
-                transactions.Add(CustomMapper.MapDTO<Transaction, TransactionDTO>(transfer));
+                transactionsDTO.Add(CustomMapper.MapDTO<Transaction, TransactionDTO>(transfer));
             }
 
-            return transactions;
+            return new PagedList<TransactionDTO>(transactionsDTO, transactionsDTO.Count, parameters.PageNumber, parameters.PageSize);
         }
     }
 }

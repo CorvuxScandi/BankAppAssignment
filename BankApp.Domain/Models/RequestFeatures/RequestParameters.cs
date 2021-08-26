@@ -29,4 +29,9 @@ namespace BankApp.Enteties.Models.RequestFeatures
     public class CustomerParameters : RequestParameters
     {
     }
+
+    public class TransactionParameters : RequestParameters
+    {
+        public int AccountId { get; set; }
+    }
 }

@@ -1,14 +1,10 @@
-﻿using AutoMapper;
-using BankApp.Application.Interfaces;
+﻿using BankApp.Application.Interfaces;
 using BankApp.Application.Tools;
-using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
 using BankApp.Enteties.DataTransferObjects;
 using BankApp.Enteties.Models.RequestFeatures;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BankApp.Web.Api.Controllers
@@ -18,38 +14,33 @@ namespace BankApp.Web.Api.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private IAdminService _admincervice;
-        private readonly IMapper _mapper;
+        private readonly IAdminService _admincervice;
 
-        public AdminController(IAdminService admincervice, IMapper mapper)
+        public AdminController(IAdminService admincervice)
         {
             _admincervice = admincervice;
-            _mapper = mapper;
         }
 
         // GET: api/<AdminController>
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] CustomerParameters parameters)
+        public async Task<IActionResult> GetCustomers([FromQuery] CustomerParameters parameters)
         {
-            var result = await _admincervice.GetCustomers(parameters);
+            var pagedResult = _admincervice.GetCustomers(parameters);
 
-            Response.Headers.Add("X-Pagnation", JsonConvert.SerializeObject(result.MetaData));
+            Response.Headers.Add("X-Pagnation", JsonConvert.SerializeObject(pagedResult.MetaData));
 
-            var dto = _mapper.Map<IEnumerable<CustomerDTO>>(result);
-
-            return Ok(dto);
+            return Ok(pagedResult);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int customerId)
+        public IActionResult GetCustomerAccounts(int customerId)
         {
             var accounts = _admincervice.GetCustomerAccounts(customerId);
             return Ok(accounts);
         }
 
         [HttpGet("accounttypes")]
-        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.User)]
-        public IActionResult GetAccTypes()
+        public IActionResult GetAccountTypes()
         {
             var types = _admincervice.GetAccountTypes();
 
@@ -58,11 +49,11 @@ namespace BankApp.Web.Api.Controllers
 
         // POST api/<AdminController>
         [HttpPost("newloan")]
-        public IActionResult NewLoan([FromBody]Loan loan)
+        public IActionResult NewLoan([FromBody] LoanDTO loan)
         {
             if (loan != null)
             {
-                _admincervice.AddLoan(loan);
+                _admincervice.AddLoan(CustomMapper.ReveceMap<LoanDTO, Loan>(loan));
                 return Ok();
             }
             return BadRequest();

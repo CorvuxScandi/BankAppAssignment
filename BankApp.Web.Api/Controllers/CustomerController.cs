@@ -1,15 +1,8 @@
 ﻿using BankApp.Application.Interfaces;
-using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using BankApp.Enteties.Models.RequestFeatures;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Newtonsoft.Json;
 
 namespace BankApp.Web.Api.Controllers
 {
@@ -27,24 +20,26 @@ namespace BankApp.Web.Api.Controllers
 
         // GET api/<ValuesController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetInformation(int id)
         {
             var customerInfo = _customerService.GetCustomerInfo(id);
 
             return Ok(customerInfo);
         }
 
-        [HttpGet("accounts")]
-        public IActionResult GetTransactions(int id)
+        [HttpGet("transactions")]
+        public IActionResult GetTransactions([FromQuery] TransactionParameters request)
         {
-            var responce = _customerService.GetTransactions(id);
+            var responce = _customerService.GetTransactions(request);
+
+            Response.Headers.Add("X-Pagnation", JsonConvert.SerializeObject(responce.MetaData));
 
             return Ok(responce);
         }
 
         // POST api/<ValuesController>
         [HttpPost("transaction")]
-        public IActionResult Post([FromBody] InternalTransaction transaction)
+        public IActionResult PostTransaction([FromBody] InternalTransaction transaction)
         {
             _customerService.Addtransaction(transaction);
 

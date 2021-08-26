@@ -10,11 +10,11 @@ namespace BankApp.Application.Interfaces
     {
         void AddAccountType(AccountType accountType);
 
-        List<AccountType> GetAccountTypes();
+        List<AccountTypeDTO> GetAccountTypes();
 
-        Task<PagedList<Customer>> GetCustomers(CustomerParameters parameters);
+        PagedList<CustomerDTO> GetCustomers(CustomerParameters parameters);
 
-        List<Account> GetCustomerAccounts(int id);
+        List<AccountDTO> GetCustomerAccounts(int id);
 
         void AddLoan(Loan loan);
 
