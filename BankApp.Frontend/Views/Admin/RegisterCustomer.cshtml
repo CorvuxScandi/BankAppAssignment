@@ -1,0 +1,58 @@
+﻿@page
+@model BankApp.Enteties.DataTransferObjects.RegisterCustomerDTO
+
+<div class="container">
+
+    <form asp-action="RegisterCustomer" asp-controller="Admin">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div id="custoemr-credentials">
+            <input type="text" asp-for="Customer.Givenname" class="form-control" />
+            <input type="text" asp-for="Customer.Surname" class="form-control" />
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" asp-for="Customer.Gender" value="Female" />
+                <label class="form-check-label" asp-for="Customer.Gender">Female</label>
+
+                <input class="form-check-input" asp-for="Customer.Gender" value="Male" />
+                <label class="form-check-label" asp-for="Customer.Gender">Male</label>
+
+                <input class="form-check-input" asp-for="Customer.Gender" value="Other" />
+                <label class="form-check-label" asp-for="Customer.Gender">Other</label>
+            </div>
+
+            <input type="text" asp-for="Customer.Streetaddress" class="form-control" />
+            <input type="text" asp-for="Customer.City" class="form-control" />
+            <input type="text" asp-for="Customer.Zipcode" class="form-control" />
+            <input type="text" asp-for="Customer.Country" class="form-control" />
+            <input type="text" asp-for="Customer.CountryCode" class="form-control" />
+            <input type="date" asp-for="Customer.Birthday" class="form-control" />
+            <input type="tel" asp-for="Customer.Telephonenumber" class="form-control" />
+            <input type="number" asp-for="Customer.Telephonecountrycode" class="form-control" />
+            <input type="email" asp-for="Customer.Emailaddress" class="form-control" />
+        </div>
+
+        <div id="account-data">
+            <select class="form-select">
+                <option selected>Account type</option>
+                @foreach (var item in collection)
+                {
+                    <option value="@item.AccountTypeId">@item.name</option>
+                }
+            </select>
+            <div class="form-check form-check-inline">
+                <input type="radio" asp-for="Account.Frequency" class="form-check-input" value="Weekly" />
+                <label class="form-check-label" asp-for="Account.Frequency">Weekly</label>
+
+                <input type="radio" asp-for="Account.Frequency" class="form-check-input" value="Monthly" />
+                <label class="form-check-label" asp-for="Account.Frequency">Monthly</label>
+
+                <input type="radio" asp-for="Account.Frequency" class="form-check-input" value="After transaction" />
+                <label class="form-check-label" asp-for="Account.Frequency">After transaction</label>
+            </div>
+
+            <input type="date" value="@DateTime.Now" asp-for="Account.Created" readonly />
+            <input type="number" asp-for="Account.Balance" class="form-control" value="0" readonly />
+        </div>
+    </form>
+</div>

@@ -1,0 +1,51 @@
+﻿@page
+@model BankApp.Enteties.DataTransferObjects.CustomerInfoDTO
+
+<div class="container">
+
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    @*Name of customer*@
+                    <p>
+                        Välkommen:
+                        @{
+                            string fullName = Model.CustomerInfo.Surname + " " + Model.CustomerInfo.Givenname;
+                        }
+                    </p>
+                </div>
+
+                <div class="card-body">
+                    @* list of accounts *@
+                    <div class="row">
+                        <div class="col-12">
+                            <ul class="list-group-horizontal">
+                                @foreach (var acc in Model.Accounts)
+                                {
+                                    <li class="list-group-item">
+                                        @*Link to show transactions for account*@
+                                        <p>@acc.AccountId</p>
+                                        <a class="btn btn-secondary">
+                                            Visa transaktioner
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @*List of resent transactions for account*@
+                        <div class="col">
+                            @(await Component.InvokeAsync("TransactionsView"))
+                        </div>
+                        <div class="col">
+                            @*Show cards connected to account*@
+                            @(await Component.InvokeAsync("Card", Model.Cards))
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,15 +1,17 @@
 ﻿using BankApp.Application.Interfaces;
 using BankApp.Application.Tools;
+using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
 using BankApp.Enteties.DataTransferObjects;
 using BankApp.Enteties.Models.RequestFeatures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace BankApp.Web.Api.Controllers
 {
-    //[Authorize(Roles = UserRoles.Admin)]
+    [Authorize(Roles = UserRoles.Admin)]
     [Route("api/admin")]
     [ApiController]
     public class AdminController : ControllerBase

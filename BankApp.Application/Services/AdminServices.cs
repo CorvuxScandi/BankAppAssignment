@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using BankApp.Application.Interfaces;
+﻿using BankApp.Application.Interfaces;
 using BankApp.Application.Tools;
 using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Interfaces;
@@ -25,12 +24,11 @@ namespace BankApp.Application.Services
         private IRepository<Loan> _loanRepo;
         private UserManager<ApplicationUser> _userManager;
         private IRepository<Transaction> _transaction;
-        private readonly IMapper _mapper;
 
         public AdminServices(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo, IRepository<Card> cardRepo,
             IRepository<Customer> customerRepo, IRepository<Disposition> dispositionRepo,
-            IRepository<Loan> loanRepo, UserManager<ApplicationUser> userManager, IRepository<Transaction> transaction, IMapper mapper)
+            IRepository<Loan> loanRepo, UserManager<ApplicationUser> userManager, IRepository<Transaction> transaction)
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
@@ -40,7 +38,6 @@ namespace BankApp.Application.Services
             _loanRepo = loanRepo;
             _userManager = userManager;
             _transaction = transaction;
-            _mapper = mapper;
         }
 
         #endregion classStart

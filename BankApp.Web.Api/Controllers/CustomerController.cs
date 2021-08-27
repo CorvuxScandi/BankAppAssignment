@@ -1,12 +1,14 @@
 ﻿using BankApp.Application.Interfaces;
+using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
 using BankApp.Enteties.Models.RequestFeatures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace BankApp.Web.Api.Controllers
 {
-    // [Authorize(Roles = UserRoles.User)]
+    [Authorize(Roles = UserRoles.User)]
     [Route("api/customer")]
     [ApiController]
     public class CustomerController : ControllerBase
@@ -18,8 +20,7 @@ namespace BankApp.Web.Api.Controllers
             _customerService = customerService;
         }
 
-        // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public IActionResult GetInformation(int id)
         {
             var customerInfo = _customerService.GetCustomerInfo(id);
@@ -37,8 +38,7 @@ namespace BankApp.Web.Api.Controllers
             return Ok(responce);
         }
 
-        // POST api/<ValuesController>
-        [HttpPost("transaction")]
+        [HttpPost("transactions")]
         public IActionResult PostTransaction([FromBody] InternalTransaction transaction)
         {
             _customerService.Addtransaction(transaction);

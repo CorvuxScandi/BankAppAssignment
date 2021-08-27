@@ -36,35 +36,13 @@ namespace BankApp.Web.Api
 
             services.ConfigureDataContext(Configuration);
             services.ConfigureIdentityContext(Configuration);
+
+            services.AddAuthentication();
             services.ConfigureIdentity();
 
+            services.ConfigureJWT(Configuration);
+
             RegisterServices(services);
-            services.AddAutoMapper(typeof(Startup));
-
-
-            //services.AddAuthentication(options =>
-            //{
-            //    options.DefaultAuthenticateScheme =
-            //      JwtBearerDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme =
-            //    JwtBearerDefaults.AuthenticationScheme;
-            //}).AddJwtBearer(options =>
-            //{
-            //    options.TokenValidationParameters =
-            //    new TokenValidationParameters()
-            //    {
-            //        ValidateIssuer = true,
-            //        ValidateAudience = true,
-            //        ValidateLifetime = true,
-            //        ValidateIssuerSigningKey = true,
-
-            //        ValidAudience = Configuration["JWT:ValidAudience"],
-            //        ValidIssuer = Configuration["JWT:ValidIssuer"],
-            //        IssuerSigningKey =
-            //        new SymmetricSecurityKey
-            //    (Encoding.UTF8.GetBytes(Configuration["JWT:securityKey"]))
-            //    };
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

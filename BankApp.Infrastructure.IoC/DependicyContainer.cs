@@ -20,8 +20,7 @@ namespace BankApp.Infrastructure.IoC
             services.AddScoped<IRepository<Disposition>, DispositionRepository>();
             services.AddScoped<IRepository<Loan>, LoanRepository>();
             services.AddScoped<IRepository<Transaction>, TransactionRepository>();
-
-
+            services.AddScoped<IAuthService, AuthService>();
         }
     }
 }

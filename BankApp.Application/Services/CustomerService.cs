@@ -75,48 +75,41 @@ namespace BankApp.Application.Services
 
         public CustomerInfoDTO GetCustomerInfo(int id)
         {
-            var customer = _customerRepo.GetAll().FirstOrDefault(x => x.CustomerId == id);
+            CustomerDTO customer = CustomMapper.MapDTO<Customer, CustomerDTO>(_customerRepo.GetById(id));
+            var customerDispositions = _dispositionRepo.GetAll().ToList().Where(d => d.CustomerId == id).ToList();
+            List<AccountDTO> accounts = new();
+            List<CardDTO> cards = new();
+            List<LoanDTO> loans = new();
 
-            var CustomerDispositions =
-                _dispositionRepo
-                .GetAll()
-                .Where(x => x.CustomerId == id);
-
-            CustomerInfoDTO customerInfo = new()
+            foreach (var disposition in customerDispositions)
             {
-                CustomerInfo = CustomMapper.MapDTO<Customer, CustomerDTO>(customer)
-            };
+                //Maps customer into API model
+                var account = CustomMapper.MapDTO<Account, AccountDTO>(_accountRepo.GetById(disposition.AccountId));
+                if (account != null) accounts.Add(account);
+                var card = CustomMapper.MapDTO<Card, CardDTO>(_cardRepo.GetAll().ToList().FirstOrDefault(c => c.DispositionId == disposition.DispositionId));
+                if (card != null) cards.Add(card);
 
-            foreach (var item in CustomerDispositions)
-            {
-                //Mapps customer into API model
-                customerInfo.Accounts
-                    .Add(CustomMapper.MapDTO<Account, AccountDTO>(item.Account));
-
-                //Mapps each card that the customer posesses into the API model
-                foreach (var card in item.Cards)
+                foreach (var item in _loanRepo.GetAll().Where(l => l.AccountId == account.AccountId).ToList())
                 {
-                    customerInfo.Cards.Add(CustomMapper.MapDTO<Card, CardDTO>(card));
-                };
-
-                //Mapps all loans the customer have into the API model
-                foreach (var loan in item.Account.Loans)
-                {
-                    customerInfo.Loans.Add(CustomMapper.MapDTO<Loan, LoanDTO>(loan));
+                    loans.Add(CustomMapper.MapDTO<Loan, LoanDTO>(item));
                 }
             }
 
-            return customerInfo;
+            return new()
+            {
+                CustomerInfo = customer,
+                Accounts = accounts,
+                Cards = cards,
+                Loans = loans
+            };
         }
 
         public PagedList<TransactionDTO> GetTransactions(TransactionParameters parameters)
         {
-            var account = _accountRepo.GetById(parameters.AccountId);
-
             List<TransactionDTO> transactionsDTO = new();
 
-            var transactions = account.Transactions
-                .OrderBy(t => t.Date)
+            var transactions = _transactionRepo.GetAll().ToList().Where(t => t.AccountId == parameters.AccountId)
+                .OrderByDescending(t => t.Date)
                 .Skip((parameters.PageNumber - 1) * parameters.PageSize)
                 .Take(parameters.PageSize).ToList();
 

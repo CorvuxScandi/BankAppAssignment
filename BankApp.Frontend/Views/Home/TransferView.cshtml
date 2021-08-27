@@ -1,0 +1,31 @@
+﻿@page
+
+@model BankApp.Enteties.DataTransferObjects.TransactionDTO
+
+<div class="container">
+    <form asp-action="Transaction" asp-controller="Home">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <input class="form-control" asp-for="AccountId" type="hidden" value="@Model.AccountId" />
+
+        <input class="form-control" asp-for="Date" type="datetime-local" value="@DateTime.Now" min="@DateTime.Now" max="@DateTime.Now.AddYears(1)" />
+
+        <select class="form-select" asp-for="Type">
+            <option value=""></option>
+        </select>
+
+        <select class="form-select" asp-for="Operation">
+            <option value=""></option>
+        </select>
+
+        <input type="number" asp-for="Amount" />
+
+        <input asp-for="Bank" type="text" />
+
+        <input asp-for="Account" type="text" />
+
+        <button type="submit" class="btn btn-primary">
+            Gör transaction
+        </button>
+    </form>
+</div>

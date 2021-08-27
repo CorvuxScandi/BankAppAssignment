@@ -1,0 +1,21 @@
+﻿@model BankApp.Enteties.DataTransferObjects.IdentityDTO.RegristrationDTO
+
+<div class="container">
+
+    <form asp-action="Regristration" asp-controller="Admin">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="form-floating mb-1">
+            <input class="form-control" type="email" asp-for="@Model.Email" placeholder="name@example.com" />
+            <label asp-for="@Model.Email">Email Adress</label>
+        </div>
+        <div class="form-floating mb-1">
+            <input class="form-control" type="password" asp-for="@Model.Password" placeholder="Lösenord" />
+            <label asp-for="@Model.Password">Lösenord</label>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Regristrera</button>
+        </div>
+    </form>
+</div>
