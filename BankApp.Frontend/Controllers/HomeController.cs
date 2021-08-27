@@ -52,6 +52,28 @@ namespace BankApp.Frontend.Controllers
             return View(customer);
         }
 
+        public async Task<IActionResult> GetTransactions(int accountId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_baseUrl);
+                client.DefaultRequestHeaders.Clear();
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage responce = await client.GetAsync("transactions/");
+
+                if (responce.IsSuccessStatusCode)
+                {
+                    var apiResponce = responce.Content.ReadAsStringAsync().Result;
+
+                    customer = JsonConvert.DeserializeObject<CustomerInfoDTO>(apiResponce);
+                }
+            }
+
+            return ViewComponent("Transactions");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

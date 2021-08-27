@@ -1,5 +1,5 @@
 ﻿@page
-@model BankApp.Enteties.DataTransferObjects.RegisterCustomerDTO
+@model BankApp.Frontend.Models.NewCustomerViewModel
 
 <div class="container">
 
@@ -34,10 +34,10 @@
 
         <div id="account-data">
             <select class="form-select">
-                <option selected>Account type</option>
-                @foreach (var item in collection)
+                <option selected>Account types</option>
+                @foreach (var item in Model.AccountTypes)
                 {
-                    <option value="@item.AccountTypeId">@item.name</option>
+                    <option value="@item.AccountTypesId">@item.TypeName</option>
                 }
             </select>
             <div class="form-check form-check-inline">
@@ -54,5 +54,7 @@
             <input type="date" value="@DateTime.Now" asp-for="Account.Created" readonly />
             <input type="number" asp-for="Account.Balance" class="form-control" value="0" readonly />
         </div>
+
+        <button type="submit" class="btn btn-primary">Regristrera ny kund</button>
     </form>
 </div>

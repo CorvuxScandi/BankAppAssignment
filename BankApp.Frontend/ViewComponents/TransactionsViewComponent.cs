@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankApp.Frontend.ViewComponents
 {
-    public class TransactionsViewViewComponent : ViewComponent
+    public class TransactionsViewComponent : ViewComponent
     {
     }
 }

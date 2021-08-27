@@ -26,7 +26,7 @@
                                     <li class="list-group-item">
                                         @*Link to show transactions for account*@
                                         <p>@acc.AccountId</p>
-                                        <a class="btn btn-secondary">
+                                        <a class="btn btn-secondary" asp-route-accountId="@acc.AccountId" asp-action="GetTransactions" asp-controller="Home">
                                             Visa transaktioner
                                         </a>
                                     </li>
@@ -41,7 +41,40 @@
                         </div>
                         <div class="col">
                             @*Show cards connected to account*@
-                            @(await Component.InvokeAsync("Card", Model.Cards))
+                            <ul class="list-group list-group-flush">
+
+                                @foreach (var card in Model.Cards)
+                                {
+                                    <li class="list-group-item">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <p>@card.Ccnumber</p>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p>@card.Issued</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p>@card.Cctype</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <p>@card.Cctype</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <p class="text-muted">@card.Cvv2</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <p>@card.ExpM/@card.ExpY</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
                         </div>
                     </div>
                 </div>
