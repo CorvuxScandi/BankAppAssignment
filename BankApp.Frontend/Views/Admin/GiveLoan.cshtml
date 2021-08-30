@@ -1,21 +1,48 @@
 ﻿@page
-@model BankApp.Enteties.DataTransferObjects.LoanDTO
+@model BankApp.Frontend.Models.GiveLoanViewModel
+
+
 <div class="container">
 
-    <form asp-action="Loan" asp-controller="Admin">
-        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
-        <input asp-for="AccountId" type="hidden" value="@Model.AccountId" class="form-control" />
-        <input type="hidden" value="@DateTime.Now" class="form-control" asp-for="Date" />
-        <input type="number" asp-for="Amount" class="form-control" />
-        <input type="number" step="1" asp-for="Duration" class="form-control" />
-        <input asp-for="Payments" class="form-control" value="0" type="number" disabled />
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <p>@Model.CustomerInfo.CustomerInfo.Surname @Model.CustomerInfo.CustomerInfo.Givenname</p>
+                </div>
+                <div class="card-body">
+                    <p>Accounts</p>
+                    <ul class="list-group list-group-horizontal">
+                        @foreach (var acc in Model.CustomerInfo.Accounts)
+                        {
+                            <li class="list-group-item">
+                                <p>@acc.AccountId</p>
+                            </li>
+                        }
+                    </ul>     
+                </div>
+            </div>
+        </div>
 
-        <select asp-for="Status" class="form-control">
-            <option value="Running">Running</option>
-            <option value="Running-Client in dept">Running-Client in dept</option>
-            <option value="Finished">Finished</option>
-            <option value="Finished-Not payed">Finished-Not payed</option>
-        </select>
-    </form>
+
+        <div class="col">
+            <form asp-action="Loan" asp-controller="Admin">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                <input asp-for="LoanDTO.AccountId" type="number" value="@Model.LoanDTO.AccountId" class="form-control" />
+                <input type="hidden" value="@DateTime.Now" class="form-control" asp-for="LoanDTO.Date" />
+                <input type="number" asp-for="LoanDTO.Amount" class="form-control" />
+                <input type="number" step="1" asp-for="LoanDTO.Duration" class="form-control" />
+                <input asp-for="LoanDTO.Payments" class="form-control" value="0" type="number" disabled />
+
+                <select asp-for="LoanDTO.Status" class="form-control">
+                    <option value="Running">Running</option>
+                    <option value="Running-Client in dept">Running-Client in dept</option>
+                    <option value="Finished">Finished</option>
+                    <option value="Finished-Not payed">Finished-Not payed</option>
+                </select>
+            </form>
+        </div>
+    </div>
 </div>

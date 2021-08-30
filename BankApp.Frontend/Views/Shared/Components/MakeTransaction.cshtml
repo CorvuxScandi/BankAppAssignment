@@ -1,5 +1,4 @@
-﻿@page
-
+﻿
 @model BankApp.Enteties.DataTransferObjects.TransactionDTO
 
 <div class="container">
@@ -10,19 +9,11 @@
 
         <input class="form-control" asp-for="Date" type="datetime-local" value="@DateTime.Now" min="@DateTime.Now" max="@DateTime.Now.AddYears(1)" />
 
-        <select class="form-select" asp-for="Type">
-            <option value=""></option>
-        </select>
+        <input  class="form-control" type="number" asp-for="Amount" />
 
-        <select class="form-select" asp-for="Operation">
-            <option value=""></option>
-        </select>
+        <input class="form-control" asp-for="Bank" type="text" />
 
-        <input type="number" asp-for="Amount" />
-
-        <input asp-for="Bank" type="text" />
-
-        <input asp-for="Account" type="text" />
+        <input class="form-control" asp-for="Account" type="number" />
 
         <button type="submit" class="btn btn-primary">
             Gör transaction

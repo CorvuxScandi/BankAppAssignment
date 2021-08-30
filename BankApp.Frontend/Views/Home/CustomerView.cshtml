@@ -1,8 +1,7 @@
 ﻿@page
-@model BankApp.Enteties.DataTransferObjects.CustomerInfoDTO
+@model BankApp.Frontend.Models.CustomerViewModel
 
 <div class="container">
-
     <div class="row">
         <div class="col">
             <div class="card">
@@ -11,7 +10,7 @@
                     <p>
                         Välkommen:
                         @{
-                            string fullName = Model.CustomerInfo.Surname + " " + Model.CustomerInfo.Givenname;
+                            string fullName = Model.CustomerInfo.CustomerInfo.Surname + " " + Model.CustomerInfo.CustomerInfo.Givenname;
                         }
                     </p>
                 </div>
@@ -21,11 +20,17 @@
                     <div class="row">
                         <div class="col-12">
                             <ul class="list-group-horizontal">
-                                @foreach (var acc in Model.Accounts)
+                                @foreach (var acc in Model.CustomerInfo.Accounts)
                                 {
                                     <li class="list-group-item">
-                                        @*Link to show transactions for account*@
-                                        <p>@acc.AccountId</p>
+                                        <div>
+                                            @*Link to show transactions for account*@
+                                            <p>@acc.AccountId</p>
+                                            <div class="d-inline-flex justify-content-between">
+                                                <p>@acc.Balance</p>
+                                                <p>@Model.AccountTypes.FirstOrDefault(x => x.AccountTypesId == acc.AccountTypesId).TypeName</p>
+                                            </div>
+                                        </div>
                                         <a class="btn btn-secondary" asp-route-accountId="@acc.AccountId" asp-action="GetTransactions" asp-controller="Home">
                                             Visa transaktioner
                                         </a>
@@ -40,41 +45,7 @@
                             @(await Component.InvokeAsync("TransactionsView"))
                         </div>
                         <div class="col">
-                            @*Show cards connected to account*@
-                            <ul class="list-group list-group-flush">
-
-                                @foreach (var card in Model.Cards)
-                                {
-                                    <li class="list-group-item">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <p>@card.Ccnumber</p>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <p>@card.Issued</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p>@card.Cctype</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <p>@card.Cctype</p>
-                                                    </div>
-                                                    <div class="col">
-                                                        <p class="text-muted">@card.Cvv2</p>
-                                                    </div>
-                                                    <div class="col">
-                                                        <p>@card.ExpM/@card.ExpY</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                }
-                            </ul>
+                            @(await Component.InvokeAsync("MakeTransaktion"))
                         </div>
                     </div>
                 </div>
