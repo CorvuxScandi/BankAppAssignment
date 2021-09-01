@@ -1,8 +1,4 @@
-﻿using BankApp.Web.Api.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using BankApp.Enteties.DataTransferObjects.IdentityDTO;
 using System.Threading.Tasks;
 
 namespace BankApp.Application.Interfaces

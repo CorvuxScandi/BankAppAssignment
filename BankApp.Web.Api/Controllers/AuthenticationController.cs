@@ -1,7 +1,6 @@
 ﻿using BankApp.Application.Interfaces;
 using BankApp.Domain.IdentityModels;
 using BankApp.Enteties.DataTransferObjects.IdentityDTO;
-using BankApp.Web.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +56,7 @@ namespace BankApp.Web.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("token")]
+        [HttpPost("login")]
         public async Task<IActionResult> GetToken([FromBody] LoginDTO user)
         {
             if (!await _authService.ValidateUser(user))

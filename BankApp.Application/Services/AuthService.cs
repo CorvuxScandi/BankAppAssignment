@@ -1,12 +1,15 @@
 ﻿using BankApp.Application.Interfaces;
 using BankApp.Domain.IdentityModels;
-using BankApp.Web.Api.Models;
+using BankApp.Domain.Interfaces;
+using BankApp.Domain.Models;
+using BankApp.Enteties.DataTransferObjects.IdentityDTO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,11 +22,13 @@ namespace BankApp.Application.Services
         private readonly IConfiguration _configuration;
 
         private ApplicationUser _user;
+        private IRepository<Customer> _customerRepo;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration, IRepository<Customer> customerRepo)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _customerRepo = customerRepo;
         }
 
         public async Task<bool> ValidateUser(LoginDTO userLogin)
@@ -35,7 +40,9 @@ namespace BankApp.Application.Services
         public async Task<string> CreateToken()
         {
             var signingCredentials = GetSigningCredentials();
-            var claims = await GetClaims();
+
+            var claims = await GetClaims(
+                _customerRepo.GetAll().ToList().First(x => x.Emailaddress == _user.UserName).CustomerId);
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
 
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
@@ -64,17 +71,18 @@ namespace BankApp.Application.Services
             return tokenOptions;
         }
 
-        private async Task<List<Claim>> GetClaims()
+        private async Task<List<Claim>> GetClaims(int customerId)
         {
+            var roles = await _userManager.GetRolesAsync(_user);
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, _user.UserName)
+                new Claim(ClaimTypes.Name, _user.UserName),
             };
-            var roles = await _userManager.GetRolesAsync(_user);
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
+            if (roles.First() == UserRoles.User) claims.Add(new Claim("customerid", customerId.ToString()));
 
             return claims;
         }

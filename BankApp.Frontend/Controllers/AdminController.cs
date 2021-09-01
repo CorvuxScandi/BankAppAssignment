@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BankApp.Enteties.DataTransferObjects;
+using BankApp.Enteties.Models.RequestFeatures;
+using BankApp.Frontend.Services;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +14,7 @@ namespace BankApp.Frontend.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return View("AdminBoardView");
         }
     }
 }
