@@ -3,6 +3,7 @@ using BankApp.Application.Tools;
 using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
 using BankApp.Enteties.DataTransferObjects;
+using BankApp.Enteties.DataTransferObjects.IdentityDTO;
 using BankApp.Enteties.Models.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace BankApp.Web.Api.Controllers
 {
-    [Authorize(Roles = UserRoles.Admin)]
     [Route("api/admin")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -25,6 +25,7 @@ namespace BankApp.Web.Api.Controllers
 
         // GET: api/<AdminController>
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetCustomers([FromQuery] CustomerParameters parameters)
         {
             var pagedResult = _admincervice.GetCustomers(parameters);
@@ -35,6 +36,7 @@ namespace BankApp.Web.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult GetCustomerAccounts(int customerId)
         {
             var accounts = _admincervice.GetCustomerAccounts(customerId);
@@ -42,6 +44,7 @@ namespace BankApp.Web.Api.Controllers
         }
 
         [HttpGet("accounttypes")]
+        [Authorize(Roles = UserRoles.AdminUser)]
         public IActionResult GetAccountTypes()
         {
             var types = _admincervice.GetAccountTypes();
@@ -51,6 +54,7 @@ namespace BankApp.Web.Api.Controllers
 
         // POST api/<AdminController>
         [HttpPost("newloan")]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult NewLoan([FromBody] LoanDTO loan)
         {
             if (loan != null)
@@ -62,9 +66,19 @@ namespace BankApp.Web.Api.Controllers
         }
 
         [HttpPost("newcostumer")]
+        [Authorize(Roles = UserRoles.Admin)]
         public IActionResult NewCostumer([FromBody] RegisterCustomerDTO customerModel)
         {
             _admincervice.AddNewCustomerProfile(customerModel);
+
+            return Ok();
+        }
+
+        [HttpPost("addlogin")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public IActionResult AddLogin([FromBody] RegristrationDTO reg)
+        {
+            _admincervice.AddCustomerLogin(reg);
 
             return Ok();
         }

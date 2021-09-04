@@ -1,10 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Http;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@model BankApp.Enteties.DataTransferObjects.IdentityDTO.LoginDTO
 
 @{
     var jwtString = HttpContextAccessor.HttpContext.Session.GetString("jwt");
-
+    var id = HttpContextAccessor.HttpContext.Session.GetInt32("id");
 }
 
 <!DOCTYPE html>
@@ -30,43 +29,28 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        @if (id < 1 && id != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="admin" asp-action="Index">Admin sida</a>
+                            </li>
+                        }
+
+                        @if (id > 0 && id != null)
+                        {
+                            <li>
+                                <a class="nav-link" asp-controller="Home" asp-action="CustomerView">Din sida</a>
+                            </li>
+                        }
                     </ul>
                     <div>
                         @if (jwtString is null)
                         {
-                            <form asp-action="Login" asp-controller="Authentication" class="row">
-                                <div class="col">
-                                    <div class="row justify-content-between">
-                                        <div class="col">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <label class="text-light text-center" asp-for="UserName">Email</label>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <input class="form-control" type="email" asp-for="UserName" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <label class="text-light text-center" asp-for="Password">Lösenord</label>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <input class="form-control" type="password" asp-for="Password" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col d-flex align-content-center">
-                                    <button class="btn btn-primary" type="submit">Logga in</button>
-                                </div>
-                            </form>
+                            <partial name="_LoginPartial" />
                         }
                         else
                         {
-                            <a class="nav-link" asp-controller="Authentication" asp-action="Logout">Logga ut</a>
+                            <a class="btn btn-primary" asp-controller="Authentication" asp-action="Logout">Logga ut: @User.Identity.Name</a>
                         }
                     </div>
                 </div>

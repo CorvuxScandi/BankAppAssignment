@@ -4,6 +4,7 @@ using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Interfaces;
 using BankApp.Domain.Models;
 using BankApp.Enteties.DataTransferObjects;
+using BankApp.Enteties.DataTransferObjects.IdentityDTO;
 using BankApp.Enteties.Models.RequestFeatures;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -18,26 +19,26 @@ namespace BankApp.Application.Services
 
         private IRepository<Account> _accountRepo;
         private IRepository<AccountType> _TypeRepo;
-        private IRepository<Card> _cardRepo;
         private IRepository<Customer> _customerRepo;
         private IRepository<Disposition> _dispositionRepo;
         private IRepository<Loan> _loanRepo;
         private UserManager<ApplicationUser> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
         private IRepository<Transaction> _transaction;
 
         public AdminServices(IRepository<Account> accountRepo,
             IRepository<AccountType> typeRepo, IRepository<Card> cardRepo,
             IRepository<Customer> customerRepo, IRepository<Disposition> dispositionRepo,
-            IRepository<Loan> loanRepo, UserManager<ApplicationUser> userManager, IRepository<Transaction> transaction)
+            IRepository<Loan> loanRepo, UserManager<ApplicationUser> userManager, IRepository<Transaction> transaction, RoleManager<IdentityRole> roleManager)
         {
             _accountRepo = accountRepo;
             _TypeRepo = typeRepo;
-            _cardRepo = cardRepo;
             _customerRepo = customerRepo;
             _dispositionRepo = dispositionRepo;
             _loanRepo = loanRepo;
             _userManager = userManager;
             _transaction = transaction;
+            _roleManager = roleManager;
         }
 
         #endregion classStart
@@ -145,6 +146,22 @@ namespace BankApp.Application.Services
             }
 
             return typesDTO;
+        }
+
+        public void AddCustomerLogin(RegristrationDTO regristration)
+        {
+            var user = _userManager.FindByNameAsync(regristration.Email).Result;
+
+            if (user is not null)
+            {
+                ApplicationUser newUser = new()
+                {
+                    Email = regristration.Email,
+                    UserName = regristration.Email,
+                };
+                _userManager.CreateAsync(newUser, regristration.Password);
+                _userManager.AddToRolesAsync(newUser, regristration.Roles.ToList());
+            }
         }
     }
 }

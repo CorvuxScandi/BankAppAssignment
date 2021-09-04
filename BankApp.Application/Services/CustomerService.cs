@@ -108,7 +108,8 @@ namespace BankApp.Application.Services
         {
             List<TransactionDTO> transactionsDTO = new();
 
-            var transactions = _transactionRepo.GetAll().ToList().Where(t => t.AccountId == parameters.AccountId)
+            var transactions = _transactionRepo.GetAll().Where(t => t.AccountId == parameters.AccountId).ToList();
+            var transSkipped = transactions
                 .OrderByDescending(t => t.Date)
                 .Skip((parameters.PageNumber - 1) * parameters.PageSize)
                 .Take(parameters.PageSize).ToList();
@@ -118,7 +119,7 @@ namespace BankApp.Application.Services
                 transactionsDTO.Add(CustomMapper.MapDTO<Transaction, TransactionDTO>(transfer));
             }
 
-            return new PagedList<TransactionDTO>(transactionsDTO, transactionsDTO.Count, parameters.PageNumber, parameters.PageSize);
+            return new PagedList<TransactionDTO>(transactionsDTO, transactions.Count, parameters.PageNumber, parameters.PageSize);
         }
     }
 }

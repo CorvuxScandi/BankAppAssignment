@@ -1,0 +1,79 @@
+﻿@model BankApp.Frontend.Models.NewCustomerViewModel
+
+<div class="">
+
+    <form asp-action="RegisterCustomer" asp-controller="Admin">
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div id="custoemr-credentials">
+            <label asp-for="Customer.Givenname"></label>
+            <input type="text" asp-for="Customer.Givenname" class="form-control mb-2" />
+            <label asp-for="Customer.Surname"></label>
+            <input type="text" asp-for="Customer.Surname" class="form-control mb-2" />
+            <div class="mb-2">
+                <div class="form-check form-check-inline md-2">
+                    <input type="radio" id="female" asp-for="Customer.Gender" class="form-check-input" value="Female" />
+                    <label class="form-check-label" for="female">Kvinna</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="male" asp-for="Customer.Gender" class="form-check-input" value="Male" />
+                    <label class="form-check-label" for="male">Man</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="other" asp-for="Customer.Gender" class="form-check-input" value="Other" />
+                    <label class="form-check-label" for="other">Annat</label>
+                </div>
+            </div>
+            <label asp-for="Customer.Streetaddress"></label>
+            <input type="text" asp-for="Customer.Streetaddress" class="form-control mb-2" />
+            <label asp-for="Customer.City"></label>
+            <input type="text" asp-for="Customer.City" class="form-control mb-2" />
+            <label asp-for="Customer.Zipcode"></label>
+            <input type="text" asp-for="Customer.Zipcode" class="form-control mb-2" />
+            <label asp-for="Customer.Country"></label>
+            <input type="text" asp-for="Customer.Country" class="form-control mb-2" />
+            <label asp-for="Customer.CountryCode"></label>
+            <input type="text" asp-for="Customer.CountryCode" class="form-control mb-2" />
+            <label asp-for="Customer.Birthday"></label>
+            <input type="date" asp-for="Customer.Birthday" max="@DateTime.Now.AddYears(-16)" class="form-control mb-2" />
+            <label asp-for="Customer.Telephonenumber"></label>
+            <input type="tel" asp-for="Customer.Telephonenumber" class="form-control mb-2" />
+            <label asp-for="Customer.Telephonecountrycode"></label>
+            <input type="text" asp-for="Customer.Telephonecountrycode" class="form-control mb-2" />
+            <label asp-for="Customer.Emailaddress"></label>
+            <input type="email" asp-for="Customer.Emailaddress" class="form-control mb-2" />
+        </div>
+
+        <div id="account-data">
+            <p>Account info</p>
+            <select class="form-select mb-2">
+                <option class="bg-info" selected>Account types</option>
+                @foreach (var item in Model.AccountTypes)
+                {
+                    <option value="@item.AccountTypeId">@item.TypeName</option>
+                }
+            </select>
+            <div class="mb-2">
+
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="weekly" class="form-check-input" value="Weekly" asp-for="Account.Frequency" />
+                    <label class="form-check-label" for="weekly">Weekly</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="monthly" class="form-check-input" value="Monthly" asp-for="Account.Frequency" />
+                    <label class="form-check-label" for="monthly">Monthly</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="radio" id="after" class="form-check-input" value="After transaction" asp-for="Account.Frequency" />
+                    <label class="form-check-label" for="after">After transaction</label>
+                </div>
+            </div>
+
+            <label asp-for="Account.Created">@DateTime.Today.ToShortDateString()</label>
+            <input type="hidden" value="@DateTime.Now" asp-for="Account.Created" readonly />
+            <input type="hidden" asp-for="Account.Balance" class="form-control" value="0" readonly />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Regristrera ny kund</button>
+    </form>
+</div>

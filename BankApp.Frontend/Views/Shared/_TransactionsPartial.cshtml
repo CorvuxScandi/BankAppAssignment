@@ -1,0 +1,25 @@
+﻿@model BankApp.Enteties.Models.RequestFeatures.PagedList<BankApp.Enteties.DataTransferObjects.TransactionDTO>
+
+<div id="transactions-list">
+    <p>Page: @Model.MetaData.CurrentPage / @Model.MetaData.TotalPages</p>
+    <div class="overflow-auto" style="max-height: 400px">
+        <ul class="list-group">
+            @foreach (var tran in Model)
+            {
+                <li class="list-group-item">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <p>Datum: @tran.Date</p>
+                        </li>
+                        <li class="list-group-item">
+                            <p>Typ av överföring: @tran.Operation</p>
+                        </li>
+                        <li class="list-group-item">
+                            <p>Mängd: @tran.Amount</p>
+                        </li>
+                    </ul>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

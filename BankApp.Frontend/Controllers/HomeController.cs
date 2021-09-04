@@ -5,8 +5,9 @@ using BankApp.Frontend.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BankApp.Frontend.Controllers
@@ -27,38 +28,90 @@ namespace BankApp.Frontend.Controllers
 
         public async Task<IActionResult> CustomerView()
         {
-            string customerId = "";
-            CustomerInfoDTO customer = new();
+            int customerId = HttpContext.Session.GetInt32("id").Value;
 
-            HttpResponseMessage responce = await _clientService.CallAPI("get", "customer", customerId);
+            var customerResp = await _clientService.CallAPI("get", "customer/", customerId.ToString());
+            var accountResp = await _clientService.CallAPI("get", "admin/", "accounttypes");
 
-            if (responce.IsSuccessStatusCode)
+            if (customerResp.IsSuccessStatusCode && accountResp.IsSuccessStatusCode)
             {
-                var apiResponce = responce.Content.ReadAsStringAsync().Result;
+                var apiResponce = customerResp.Content.ReadAsStringAsync().Result;
+                var customerInfo = JsonConvert.DeserializeObject<CustomerInfoDTO>(apiResponce);
+                var respContent = await accountResp.Content.ReadAsStringAsync();
 
-                customer = JsonConvert.DeserializeObject<CustomerInfoDTO>(apiResponce);
+                ViewData["Customer"] = customerInfo.CustomerInfo;
+                ViewData["Accounts"] = customerInfo.Accounts;
+                ViewData["Cards"] = customerInfo.Cards;
+                ViewData["Loans"] = customerInfo.Loans;
+                ViewData["AccountTypes"] = JsonConvert.DeserializeObject<List<AccountTypeDTO>>(respContent);
             }
 
-            return View(customer);
+            return View("CustomerView");
         }
 
-        public async Task<IActionResult> GetTransactions(TransactionParameters parameters)
+        public async Task<IActionResult> GetTransactions(TransactionParameters para)
         {
             PagedList<TransactionDTO> transactions;
+            string query = $"transactions?accountid={para.AccountId}&pagenumber={para.PageNumber}&pagesize={para.PageSize}";
 
-            HttpResponseMessage responce = await _clientService.CallAPI("get", "customer", $"transactions?AccountID={parameters.AccountId}&PageNumber={parameters.PageNumber}&PageSize={parameters.PageSize}");
-
-            if (responce.IsSuccessStatusCode)
+            var transactionResp = await _clientService.CallAPI("get", "customer/", query);
+            if (transactionResp.IsSuccessStatusCode)
             {
-                var apiResponce = responce.Content.ReadAsStringAsync().Result;
+                var transactionList = JsonConvert.DeserializeObject<List<TransactionDTO>>(transactionResp.Content.ReadAsStringAsync().Result);
+                transactionResp.Headers.TryGetValues("X-Pagnation", out var jsonMeta);
+                var metaData = JsonConvert.DeserializeObject<MetaData>(jsonMeta.FirstOrDefault());
+                transactions = new(transactionList, transactionList.Count, metaData.CurrentPage, metaData.PageSize);
+                transactions.MetaData.TotalPages = metaData.TotalPages;
 
-                transactions = JsonConvert.DeserializeObject<PagedList<TransactionDTO>>(apiResponce);
-                return ViewComponent("Transactions", transactions);
-            }
+                HttpContext.Session.SetString("MetaData", JsonConvert.SerializeObject(metaData));
+                HttpContext.Session.SetInt32("AccountID", para.AccountId);
+                return PartialView("_TransactionsPartial", transactions);
+            };
 
-            ViewBag.ErrorMessage = "Something went wrong, please try again";
+            ViewBag.errorMessage = "server error";
+            transactions = new(new(), 0, 1, 1);
+            return PartialView("_TransactionsPartial", transactions);
+        }
 
-            return RedirectToAction("CustoemrView");
+        public IActionResult PrevTransactions()
+        {
+            var metaData = JsonConvert.DeserializeObject<MetaData>(HttpContext.Session.GetString("MetaData"));
+            var id = HttpContext.Session.GetInt32("AccountId").Value;
+            TransactionParameters para = new()
+            {
+                AccountId = id,
+                PageNumber = metaData.CurrentPage - 1,
+                PageSize = metaData.PageSize
+            };
+
+            return RedirectToAction("GetTransactions", para);
+        }
+
+        public IActionResult NextTransactions()
+        {
+            var metaData = JsonConvert.DeserializeObject<MetaData>(HttpContext.Session.GetString("MetaData"));
+            var id = HttpContext.Session.GetInt32("AccountId").Value;
+
+            TransactionParameters para = new()
+            {
+                AccountId = id,
+                PageNumber = metaData.CurrentPage + 1,
+                PageSize = metaData.PageSize
+            };
+
+            return RedirectToAction("GetTransactions", para);
+        }
+
+        public IActionResult InitiateTransactions(int accountId)
+        {
+            TransactionParameters para = new()
+            {
+                AccountId = accountId,
+                PageNumber = 1,
+                PageSize = 30
+            };
+
+            return RedirectToAction("GetTransactions", para);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

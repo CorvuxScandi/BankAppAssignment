@@ -8,7 +8,7 @@ namespace BankApp.Enteties.Models.RequestFeatures
 {
     public abstract class RequestParameters
     {
-        private const int maxPageSize = 50;
+        private const int MaxPageSize = 50;
         public int PageNumber { get; set; } = 1;
 
         private int _pageSize = 10;
@@ -21,7 +21,7 @@ namespace BankApp.Enteties.Models.RequestFeatures
             }
             set
             {
-                _pageSize = (value > maxPageSize) ? maxPageSize : value;
+                _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
             }
         }
     }

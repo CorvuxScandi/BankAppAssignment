@@ -8,7 +8,7 @@ namespace BankApp.Enteties.DataTransferObjects
 {
     public class AccountTypeDTO
     {
-        public int AccountTypesId { get; set; }
+        public int AccountTypeId { get; set; }
         public string TypeName { get; set; }
         public string Description { get; set; }
     }

@@ -8,13 +8,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BankApp.Frontend.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private readonly string _baseUrl = "https://localhost:5000/api/authentication/";
+        private readonly string _baseUrl = "http://localhost:5000/api/auth/";
 
         public async Task<IActionResult> Login(LoginDTO login)
         {
@@ -28,20 +29,16 @@ namespace BankApp.Frontend.Controllers
 
                 if (responce.IsSuccessStatusCode)
                 {
-                    var jwtString = await responce.Content.ReadAsStringAsync();
-                    JwtSecurityToken jwt = JsonConvert.DeserializeObject<JwtSecurityToken>(jwtString);
-                    var role = jwt.Claims.FirstOrDefault(c => c.Type == "Role").Value;
+                    var res = await responce.Content.ReadAsStringAsync();
+                    string jwtString = JsonConvert.DeserializeObject<dynamic>(res).token;
+                    JwtSecurityTokenHandler handler = new();
+                    var jwtToken = handler.ReadJwtToken(jwtString);
+                    var role = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role).Value;
 
                     HttpContext.Session.SetString("jwt", jwtString);
+                    var id = Int32.Parse(jwtToken.Claims.FirstOrDefault(i => i.Type == "customerid").Value);
 
-                    if (role == UserRoles.Admin)
-                    {
-                        return RedirectToAction("Index", "Admin");
-                    }
-                    if (role == UserRoles.User)
-                    {
-                        return RedirectToAction("CustomerView", "Home");
-                    };
+                    HttpContext.Session.SetInt32("id", id);
                 }
             };
 

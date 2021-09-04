@@ -1,8 +1,6 @@
 ﻿using BankApp.Enteties.DataTransferObjects;
-using System;
+using BankApp.Enteties.Models.RequestFeatures;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BankApp.Frontend.Models
 {
@@ -12,5 +10,6 @@ namespace BankApp.Frontend.Models
 
         public List<AccountTypeDTO> AccountTypes { get; set; }
 
+        public PagedList<TransactionDTO> PagedListTransactions { get; set; }
     }
 }

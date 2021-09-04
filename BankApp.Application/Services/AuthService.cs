@@ -40,9 +40,16 @@ namespace BankApp.Application.Services
         public async Task<string> CreateToken()
         {
             var signingCredentials = GetSigningCredentials();
+            int customerId = -1;
 
-            var claims = await GetClaims(
-                _customerRepo.GetAll().ToList().First(x => x.Emailaddress == _user.UserName).CustomerId);
+            if (_user.UserName != "admin@mail.com")
+            {
+                var allCustomers = _customerRepo.GetAll().ToList();
+                customerId = allCustomers.FirstOrDefault(x => x.Emailaddress == _user.UserName).CustomerId;
+            }
+
+            var claims = await GetClaims(customerId);
+
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
 
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
@@ -82,7 +89,7 @@ namespace BankApp.Application.Services
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
-            if (roles.First() == UserRoles.User) claims.Add(new Claim("customerid", customerId.ToString()));
+            claims.Add(new Claim("customerid", customerId.ToString()));
 
             return claims;
         }

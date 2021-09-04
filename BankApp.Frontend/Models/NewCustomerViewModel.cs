@@ -13,8 +13,6 @@ namespace BankApp.Frontend.Models
 
         public AccountDTO Account { get; set; }
 
-        public RegristrationDTO Regristration { get; set; }
-
         public List<AccountTypeDTO> AccountTypes { get; set; }
     }
 }

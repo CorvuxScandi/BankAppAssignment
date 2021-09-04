@@ -14,7 +14,7 @@ namespace BankApp.Data
         {
             SeedRoles(_roleManager);
             SeedAdmin(_manager);
-            //SeedUsers(_manager, appDataContext);
+            SeedUsers(_manager, appDataContext);
         }
 
         public static void SeedRoles(RoleManager<IdentityRole> _roleManager)

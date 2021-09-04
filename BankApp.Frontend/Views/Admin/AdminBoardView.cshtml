@@ -5,19 +5,19 @@
 
         <div class="col border-right">
             @*Customer list*@
-            @(await Component.InvokeAsync("Customers"))
+            @await Component.InvokeAsync("Customers", new { PageNumber = 1, PageSize = 30 })
         </div>
         <div class="col border-right">
             @*New Customer Acc*@
-            @(await Component.InvokeAsync("RegisterCustomer"))
+            @await Component.InvokeAsync("RegisterCustomer")
         </div>
         <div class="col border-right">
             @*Customer login*@
-            @(await Component.InvokeAsync("AddCustomerLogin"))
+            @await Component.InvokeAsync("AddCustomerLogin")
         </div>
         <div class="col border-right">
             @*New accounttype*@
-            @(await Component.InvokeAsync("NewAccountType"))
+            @await Component.InvokeAsync("NewAccountType")
         </div>
     </div>
 </div>

@@ -16,5 +16,19 @@ namespace BankApp.Frontend.Controllers
         {
             return View("AdminBoardView");
         }
+
+        public IActionResult GetCustomers(CustomerParameters para)
+        {
+            if (para is null)
+            {
+                para = new()
+                {
+                    PageNumber = 1,
+                    PageSize = 20
+                };
+            }
+
+            return ViewComponent("Customers", new { p = para });
+        }
     }
 }

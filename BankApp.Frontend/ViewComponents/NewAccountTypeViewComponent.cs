@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace BankApp.Frontend.ViewComponents
 {
-    public class BankCardsViewComponent : ViewComponent
+    public class NewAccountTypeViewComponent : ViewComponent
     {
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            return View();
+        }
     }
 }

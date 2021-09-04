@@ -1,5 +1,6 @@
 ﻿using BankApp.Domain.Models;
 using BankApp.Enteties.DataTransferObjects;
+using BankApp.Enteties.DataTransferObjects.IdentityDTO;
 using BankApp.Enteties.Models.RequestFeatures;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,5 +20,7 @@ namespace BankApp.Application.Interfaces
         void AddLoan(Loan loan);
 
         void AddNewCustomerProfile(RegisterCustomerDTO customerModel);
+
+        void AddCustomerLogin(RegristrationDTO regristration);
     }
 }
