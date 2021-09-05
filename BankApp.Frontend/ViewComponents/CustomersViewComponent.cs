@@ -32,7 +32,8 @@ namespace BankApp.Frontend.ViewComponents
                     PageSize = 30
                 };
             }
-            var resp = await _clientService.CallAPI("get", "admin", $"?pageNumber={p.PageNumber}&pageSize={p.PageSize}");
+            string url = $"admin?pageNumber={p.PageNumber}&pageSize={p.PageSize}";
+            var resp = await _clientService.CallAPI(url);
 
             if (resp.IsSuccessStatusCode)
             {

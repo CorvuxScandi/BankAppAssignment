@@ -9,8 +9,8 @@ namespace BankApp.Frontend.Services
     {
         IEnumerable<Claim> GetTokenClaims(string token);
 
-        Task<HttpResponseMessage> CallAPI(string method, string target, string endURI, object value);
+        Task<HttpResponseMessage> CallAPI(string endURI, object value);
 
-        Task<HttpResponseMessage> CallAPI(string method, string target, string endURI);
+        Task<HttpResponseMessage> CallAPI(string endURI);
     }
 }

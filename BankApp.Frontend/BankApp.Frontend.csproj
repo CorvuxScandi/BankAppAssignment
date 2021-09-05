@@ -5,7 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Authentication\" />
+    <Compile Remove="Views\Authentication\**" />
+    <Content Remove="Views\Authentication\**" />
+    <EmbeddedResource Remove="Views\Authentication\**" />
+    <None Remove="Views\Authentication\**" />
   </ItemGroup>
 
   <ItemGroup>

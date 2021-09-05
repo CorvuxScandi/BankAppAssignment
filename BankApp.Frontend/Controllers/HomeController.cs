@@ -28,10 +28,12 @@ namespace BankApp.Frontend.Controllers
 
         public async Task<IActionResult> CustomerView()
         {
-            int customerId = HttpContext.Session.GetInt32("id").Value;
+            string customerId = HttpContext.Session.GetInt32("id").Value.ToString();
 
-            var customerResp = await _clientService.CallAPI("get", "customer/", customerId.ToString());
-            var accountResp = await _clientService.CallAPI("get", "admin/", "accounttypes");
+            string customerUrl = $"customer/{customerId}";
+            var customerResp = await _clientService.CallAPI(customerUrl);
+            string accountTypUrl = $"admin/accounttypes";
+            var accountResp = await _clientService.CallAPI(accountTypUrl);
 
             if (customerResp.IsSuccessStatusCode && accountResp.IsSuccessStatusCode)
             {
@@ -54,7 +56,9 @@ namespace BankApp.Frontend.Controllers
             PagedList<TransactionDTO> transactions;
             string query = $"transactions?accountid={para.AccountId}&pagenumber={para.PageNumber}&pagesize={para.PageSize}";
 
-            var transactionResp = await _clientService.CallAPI("get", "customer/", query);
+            var transactionResp = await _clientService.CallAPI($"customer/{query}");
+
+
             if (transactionResp.IsSuccessStatusCode)
             {
                 var transactionList = JsonConvert.DeserializeObject<List<TransactionDTO>>(transactionResp.Content.ReadAsStringAsync().Result);
@@ -123,10 +127,10 @@ namespace BankApp.Frontend.Controllers
             return View(transactionDTO);
         }
 
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> Transaction(TransactionDTO transaction)
         {
-            var resp = await _clientService.CallAPI("post", "customer", "/transaction", transaction);
+            var resp = await _clientService.CallAPI("customer/transaction", transaction);
             if (resp.IsSuccessStatusCode)
             {
                 return RedirectToAction("CustomerView");

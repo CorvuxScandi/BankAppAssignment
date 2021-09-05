@@ -26,7 +26,7 @@ namespace BankApp.Frontend.ViewComponents
                 Account = new(),
                 Customer = new(),
             };
-            var resp = await _clientService.CallAPI("get", "admin", "/accounttypes");
+            var resp = await _clientService.CallAPI("admin/accounttypes");
             if (resp.IsSuccessStatusCode)
             {
                 var jsonString = await resp.Content.ReadAsStringAsync();
