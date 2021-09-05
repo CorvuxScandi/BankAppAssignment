@@ -8,7 +8,7 @@ namespace BankApp.Application.Interfaces
     {
         CustomerInfoDTO GetCustomerInfo(int id);
 
-        void Addtransaction(InternalTransaction transaction);
+        void Addtransaction(Transaction transaction);
 
         PagedList<TransactionDTO> GetTransactions(TransactionParameters parameters);
     }

@@ -63,8 +63,9 @@ namespace BankApp.Frontend.Controllers
                 transactions = new(transactionList, transactionList.Count, metaData.CurrentPage, metaData.PageSize);
                 transactions.MetaData.TotalPages = metaData.TotalPages;
 
-                HttpContext.Session.SetString("MetaData", JsonConvert.SerializeObject(metaData));
-                HttpContext.Session.SetInt32("AccountID", para.AccountId);
+                var metaString = JsonConvert.SerializeObject(metaData);
+                HttpContext.Session.SetString("MetaData", metaString);
+
                 return PartialView("_TransactionsPartial", transactions);
             };
 
@@ -104,6 +105,7 @@ namespace BankApp.Frontend.Controllers
 
         public IActionResult InitiateTransactions(int accountId)
         {
+            HttpContext.Session.SetInt32("AccountId", accountId);
             TransactionParameters para = new()
             {
                 AccountId = accountId,
@@ -112,6 +114,26 @@ namespace BankApp.Frontend.Controllers
             };
 
             return RedirectToAction("GetTransactions", para);
+        }
+
+        public IActionResult MakeTransaction(int accountId)
+        {
+            TransactionDTO transactionDTO = new() { AccountId = accountId };
+
+            return View(transactionDTO);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Transaction(TransactionDTO transaction)
+        {
+            var resp = await _clientService.CallAPI("post", "customer", "/transaction", transaction);
+            if (resp.IsSuccessStatusCode)
+            {
+                return RedirectToAction("CustomerView");
+            }
+
+            ViewBag.ErrorMessage = "server error try again";
+            return View("MakeTransaction", transaction);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

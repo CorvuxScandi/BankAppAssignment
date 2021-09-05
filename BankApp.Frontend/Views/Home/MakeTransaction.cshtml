@@ -1,9 +1,9 @@
 ﻿@model BankApp.Enteties.DataTransferObjects.TransactionDTO
 
-<div class="">
+<div class="container">
     <form asp-action="Transaction" asp-controller="Home">
         @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-        <label asp-for="AccountId">KontoId: @Model.AccountId</label>
+        <label asp-for="AccountId">Konto ID: @Model.AccountId</label>
         <input class="form-control md-3" asp-for="AccountId" type="hidden" value="@Model.AccountId" />
         <label asp-for="Date">Transaktionsdatum</label>
         <input class="form-control md-3" asp-for="Date" type="datetime-local" value="@DateTime.Now" min="@DateTime.Now" max="@DateTime.Now.AddYears(1)" />

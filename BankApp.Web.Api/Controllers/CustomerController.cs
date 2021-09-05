@@ -1,6 +1,8 @@
 ﻿using BankApp.Application.Interfaces;
+using BankApp.Application.Tools;
 using BankApp.Domain.IdentityModels;
 using BankApp.Domain.Models;
+using BankApp.Enteties.DataTransferObjects;
 using BankApp.Enteties.Models.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,9 +40,11 @@ namespace BankApp.Web.Api.Controllers
             return Ok(responce);
         }
 
-        [HttpPost("transactions")]
-        public IActionResult PostTransaction([FromBody] InternalTransaction transaction)
+        [HttpPost("transaction")]
+        public IActionResult PostTransaction([FromBody] TransactionDTO transactionDto)
         {
+            var transaction = CustomMapper.ReveceMap<TransactionDTO, Transaction>(transactionDto);
+
             _customerService.Addtransaction(transaction);
 
             return Ok();

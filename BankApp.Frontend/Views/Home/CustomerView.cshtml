@@ -39,29 +39,36 @@
                                                 <p>Kontotyp: @accountTypes.FirstOrDefault(x => x.AccountTypeId == acc.AccountTypesId).TypeName</p>
                                             </div>
                                         </div>
-
-                                        <a class="btn btn-secondary"
-                                           asp-action="InitiateTransactions"
-                                           asp-controller="Home"
-                                           asp-route-accountId="@acc.AccountId"
-                                           data-ajax="true"
-                                           data-ajax-metod="get"
-                                           data-ajax-mode="replace"
-                                           data-ajax-update="#transactions">
-                                            Visa transaktioner
-                                        </a>
+                                        <div class="d-flex justify-content-between">
+                                            <a class="btn btn-secondary"
+                                               asp-action="InitiateTransactions"
+                                               asp-controller="Home"
+                                               asp-route-accountId="@acc.AccountId"
+                                               data-ajax="true"
+                                               data-ajax-metod="get"
+                                               data-ajax-mode="replace"
+                                               data-ajax-update="#transactions">
+                                                Visa transaktioner
+                                            </a>
+                                            <a class="btn btn-secondary"
+                                               asp-action="MakeTransaction"
+                                               asp-controller="Home"
+                                               asp-route-accountId="@acc.AccountId">
+                                                Gör en transaktion från @acc.AccountId
+                                            </a>
+                                        </div>
                                     </li>
                                 }
                             </ul>
                         </div>
                     </div>
                     <div class="row">
-                        @*List of resent transactions for account*@
                         <div class="col">
-
                             <div id="transactions">
+                                @*List of resent transactions for account*@
                             </div>
-                            <div class="d-inline-flex justify-content-between">
+
+                            <div class="d-flex justify-content-between">
 
                                 <a id="show-prev" class="btn btn-secondary"
                                    asp-action="PrevTransactions"
@@ -69,14 +76,19 @@
                                    data-ajax="true"
                                    data-ajax-update="#transactions"
                                    data-ajax-mode="replace"
-                                   data-ajax-loading="#spinner">
-                                    <section>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.1472.146a.5.50  1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
-                                        </svg>
-                                    </section>
-
-                                    Backa
+                                   data-ajax-loading="#baka">
+                                    <div class="row">
+                                        <div class="col">
+                                            <section>
+                                                <div class="spinner-border m-1" role="status" style="display:none" id="baka">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </section>
+                                        </div>
+                                        <div class="col">
+                                            <p>Backa</p>
+                                        </div>
+                                    </div>
                                 </a>
                                 <a id="show-next" class="btn btn-secondary"
                                    asp-action="NextTransactions"
@@ -84,18 +96,21 @@
                                    data-ajax="true"
                                    data-ajax-update="#transactions"
                                    data-ajax-mode="replace"
-                                   data-ajax-loading="#spinner">
-                                    Nästa
-                                    <section>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0001h5.793l-2.1472.146a.5.5  0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
-                                        </svg>
-                                    </section>
+                                   data-ajax-loading="#ErenJeger">
+                                    <div class="row">
+                                        <div class="col">
+                                            <p>Nästa</p>
+                                        </div>
+                                        <div class="col">
+                                            <section>
+                                                <div class="spinner-border m-1" role="status" style="display:none" id="ErenJeger">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                            </section>
+                                        </div>
+                                    </div>
                                 </a>
                             </div>
-                        </div>
-                        <div class="col">
-                            @await Component.InvokeAsync("MakeTransaction")
                         </div>
                     </div>
                 </div>

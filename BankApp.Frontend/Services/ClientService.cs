@@ -25,12 +25,13 @@ namespace BankApp.Frontend.Services
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Clear();
 
-            client.BaseAddress = new Uri($"{_baseUrl}{target}");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{target}/{endURI}");
+            request.Content.
 
             if (jwtString is not null)
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer ", jwtString);
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + jwtString);
             }
 
             return await client.PostAsJsonAsync(endURI, value);
@@ -50,14 +51,6 @@ namespace BankApp.Frontend.Services
             var response = await client.SendAsync(request);
 
             return response;
-
-            //using var client = new HttpClient();
-            //client.DefaultRequestHeaders.Clear();
-
-            //client.BaseAddress = new Uri(_baseUrl + target);
-            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            //return await client.GetAsync(endURI);
         }
 
         public IEnumerable<Claim> GetTokenClaims(string token)
