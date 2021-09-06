@@ -1,15 +1,16 @@
-﻿@page
-
-<div class="container-fluid">
+﻿<div class="container-fluid">
     <div class="row">
 
         <div class="col border-right">
             @*Customer list*@
-            @await Component.InvokeAsync("Customers", new { PageNumber = 1, PageSize = 30 })
+            @await Html.PartialAsync("_CustomersPartial", ViewData["Customers"])
         </div>
         <div class="col border-right">
             @*New Customer Acc*@
-            @await Component.InvokeAsync("RegisterCustomer")
+            <partial name="_RegCustomerPartial" />
+        </div>
+        <div class="col border-right">
+            @await Component.InvokeAsync("RegAccount")
         </div>
         <div class="col border-right">
             @*Customer login*@

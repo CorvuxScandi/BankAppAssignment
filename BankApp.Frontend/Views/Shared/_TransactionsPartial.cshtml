@@ -1,15 +1,18 @@
-﻿@model BankApp.Enteties.Models.RequestFeatures.PagedList<BankApp.Enteties.DataTransferObjects.TransactionDTO>
+﻿@model PagedList<TransactionDTO>
 
-<div id="transactions-list">
+<div id="transactions-list" class="container">
     <p>Page: @Model.MetaData.CurrentPage / @Model.MetaData.TotalPages</p>
-    <div class="overflow-auto" style="max-height: 400px">
+    <div class="spinner-border m-1" role="status" style="display:none" id="loading">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="overflow-auto border rounded" style="max-height: 400px">
         <ul class="list-group">
             @foreach (var tran in Model)
             {
                 <li class="list-group-item">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <p>Datum: @tran.Date</p>
+                            <p>Datum: @tran.Date.ToShortDateString()</p>
                         </li>
                         <li class="list-group-item">
                             <p>Typ av överföring: @tran.Operation</p>
@@ -21,5 +24,25 @@
                 </li>
             }
         </ul>
+        <div class="d-flex justify-content-between">
+            <a id="show-prev" class="btn btn-secondary"
+               asp-action="PrevTransactions"
+               asp-controller="Home"
+               data-ajax="true"
+               data-ajax-update="#transactions"
+               data-ajax-mode="replace"
+               data-ajax-loading="#loading">
+                Backa
+            </a>
+            <a id="show-next" class="btn btn-secondary"
+               asp-action="NextTransactions"
+               asp-controller="Home"
+               data-ajax="true"
+               data-ajax-update="#transactions"
+               data-ajax-mode="replace"
+               data-ajax-loading="#loading">
+                Nästa
+            </a>
+        </div>
     </div>
 </div>

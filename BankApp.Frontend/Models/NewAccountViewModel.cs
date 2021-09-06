@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace BankApp.Frontend.Models
 {
-    public class NewCustomerViewModel
+    public class NewAccountViewModel
     {
-        public CustomerDTO Customer { get; set; }
-
         public AccountDTO Account { get; set; }
 
         public List<AccountTypeDTO> AccountTypes { get; set; }

@@ -10,21 +10,20 @@ using System.Threading.Tasks;
 
 namespace BankApp.Frontend.ViewComponents
 {
-    public class RegisterCustomerViewComponent : ViewComponent
+    public class RegAccountViewComponent : ViewComponent
     {
         private readonly IClientService _clientService;
 
-        public RegisterCustomerViewComponent(IClientService clientService)
+        public RegAccountViewComponent(IClientService clientService)
         {
             _clientService = clientService;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            NewCustomerViewModel model = new()
+            NewAccountViewModel model = new()
             {
                 Account = new(),
-                Customer = new(),
             };
             var resp = await _clientService.CallAPI("admin/accounttypes");
             if (resp.IsSuccessStatusCode)

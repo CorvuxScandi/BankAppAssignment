@@ -1,0 +1,36 @@
+﻿@model NewAccountViewModel
+
+<form asp-action="RegAccount" asp-controller="Admin">
+    <div id="account-data">
+        <p>Account info</p>
+        <input type="number"
+        <select class="form-select mb-2">
+            <option class="bg-info" selected>Account types</option>
+            @foreach (var item in Model.AccountTypes)
+            {
+                <option value="@item.AccountTypeId">@item.TypeName</option>
+            }
+        </select>
+        <div class="mb-2">
+
+            <div class="form-check form-check-inline">
+                <input type="radio" id="weekly" class="form-check-input" value="Weekly" asp-for="Account.Frequency" />
+                <label class="form-check-label" for="weekly">Weekly</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="radio" id="monthly" class="form-check-input" value="Monthly" asp-for="Account.Frequency" />
+                <label class="form-check-label" for="monthly">Monthly</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="radio" id="after" class="form-check-input" value="After transaction" asp-for="Account.Frequency" />
+                <label class="form-check-label" for="after">After transaction</label>
+            </div>
+        </div>
+
+        <label asp-for="Account.Created">@DateTime.Today.ToShortDateString()</label>
+        <input type="hidden" value="@DateTime.Now" asp-for="Account.Created" readonly />
+        <input type="hidden" asp-for="Account.Balance" class="form-control" value="0" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Regristrera ny kund</button>
+</form>

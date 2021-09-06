@@ -72,33 +72,44 @@ namespace BankApp.Application.Services
             _loanRepo.Save();
         }
 
-        public void AddNewCustomerProfile(RegisterCustomerDTO customerModel)
+        public void AddNewCustomer(Customer customer)
         {
-            Customer newC = CustomMapper.MapDTO<CustomerDTO, Customer>(customerModel.Customer);
-            Account newA = new()
-            {
-                Created = DateTime.Today,
-                Balance = 0,
-                AccountTypesId = customerModel.Account.AccountTypesId,
-                Frequency = customerModel.Account.Frequency,
-            };
+            _customerRepo.Create(customer);
 
-            _customerRepo.Create(newC);
-            _accountRepo.Create(newA);
+            _customerRepo.Save();
+            _accountRepo.Save();
+        }
+
+        public void AddCustomerLogin(RegristrationDTO regristration)
+        {
+            var user = _userManager.FindByNameAsync(regristration.Email).Result;
+
+            if (user is not null)
+            {
+                ApplicationUser newUser = new()
+                {
+                    Email = regristration.Email,
+                    UserName = regristration.Email,
+                };
+                _userManager.CreateAsync(newUser, regristration.Password);
+                _userManager.AddToRolesAsync(newUser, regristration.Roles.ToList());
+            }
+        }
+
+        public void AddAccount(AccountDTO account)
+        {
+            var mapped = CustomMapper.ReveceMap<AccountDTO, Account>(account);
+            _accountRepo.Create(mapped);
 
             Disposition newDispo = new()
             {
-                CustomerId = newC.CustomerId,
-                AccountId = newA.AccountId
+                CustomerId = account.CustomerId,
+                AccountId = account.AccountId
             };
 
-            //Repo create and save
-
             _dispositionRepo.Create(newDispo);
-
-            _dispositionRepo.Save();
-            _customerRepo.Save();
             _accountRepo.Save();
+            _dispositionRepo.Save();
         }
 
         public List<AccountDTO> GetCustomerAccounts(int id)
@@ -148,20 +159,22 @@ namespace BankApp.Application.Services
             return typesDTO;
         }
 
-        public void AddCustomerLogin(RegristrationDTO regristration)
+        public CustomerAndAccounts GetCustomerAndAccounts(int id)
         {
-            var user = _userManager.FindByNameAsync(regristration.Email).Result;
+            CustomerAndAccounts cNA = new();
+            cNA.Customer = CustomMapper.MapDTO<Customer, CustomerDTO>(_customerRepo.GetById(id));
+            cNA.Accounts = new();
+            var dispposition = _dispositionRepo.GetAll();
+            var d = dispposition.Where(x => x.CustomerId == cNA.Customer.CustomerId).ToList();
 
-            if (user is not null)
+            foreach (var dis in d)
             {
-                ApplicationUser newUser = new()
-                {
-                    Email = regristration.Email,
-                    UserName = regristration.Email,
-                };
-                _userManager.CreateAsync(newUser, regristration.Password);
-                _userManager.AddToRolesAsync(newUser, regristration.Roles.ToList());
+                var account = _accountRepo.GetById(dis.AccountId);
+                var dto = CustomMapper.MapDTO<Account, AccountDTO>(account);
+                cNA.Accounts.Add(dto);
             }
+
+            return cNA;
         }
     }
 }

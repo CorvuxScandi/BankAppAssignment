@@ -19,8 +19,12 @@ namespace BankApp.Application.Interfaces
 
         void AddLoan(Loan loan);
 
-        void AddNewCustomerProfile(RegisterCustomerDTO customerModel);
+        void AddNewCustomer(Customer customer);
 
         void AddCustomerLogin(RegristrationDTO regristration);
+
+        CustomerAndAccounts GetCustomerAndAccounts(int accountId);
+
+        void AddAccount(AccountDTO account);
     }
 }

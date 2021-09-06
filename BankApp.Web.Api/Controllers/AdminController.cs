@@ -37,9 +37,9 @@ namespace BankApp.Web.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = UserRoles.Admin)]
-        public IActionResult GetCustomerAccounts(int customerId)
+        public IActionResult GetCustomerAccounts(int id)
         {
-            var accounts = _admincervice.GetCustomerAccounts(customerId);
+            var accounts = _admincervice.GetCustomerAccounts(id);
             return Ok(accounts);
         }
 
@@ -50,6 +50,14 @@ namespace BankApp.Web.Api.Controllers
             var types = _admincervice.GetAccountTypes();
 
             return Ok(types);
+        }
+
+        [HttpGet("newloan/{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public IActionResult NewLoan(int id)
+        {
+            var customerAndAccounts = _admincervice.GetCustomerAndAccounts(id);
+            return Ok(customerAndAccounts);
         }
 
         // POST api/<AdminController>
@@ -65,11 +73,20 @@ namespace BankApp.Web.Api.Controllers
             return BadRequest();
         }
 
-        [HttpPost("newcostumer")]
+        [HttpPost("newcustomer")]
         [Authorize(Roles = UserRoles.Admin)]
-        public IActionResult NewCostumer([FromBody] RegisterCustomerDTO customerModel)
+        public IActionResult NewCostumer([FromBody] CustomerDTO customer)
         {
-            _admincervice.AddNewCustomerProfile(customerModel);
+            _admincervice.AddNewCustomer(CustomMapper.ReveceMap<CustomerDTO, Customer>(customer));
+
+            return Ok();
+        }
+
+        [HttpPost("newaccount")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public IActionResult NewAccount([FromBody] AccountDTO account)
+        {
+            _admincervice.AddAccount(account);
 
             return Ok();
         }

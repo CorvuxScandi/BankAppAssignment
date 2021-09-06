@@ -40,6 +40,17 @@ namespace BankApp.Application.Services
         public void Addtransaction(Transaction transaction)
         {
             Account fromAccount = _accountRepo.GetById(transaction.AccountId);
+            if (transaction.Amount < 0)
+            {
+                transaction.Type = "Debit";
+                transaction.Operation = "Withdrawal in Cash";
+            }
+            if (transaction.Amount > 0)
+            {
+                transaction.Type = "Credit";
+                transaction.Operation = "Credit in Cash";
+            }
+
             if (transaction.Account is not null)
             {
                 var toAccount = _accountRepo.GetById(Int32.Parse(transaction.Account));
@@ -57,12 +68,20 @@ namespace BankApp.Application.Services
                         Symbol = transaction.Symbol,
                         Type = transaction.Type
                     };
-                    toAccount.Balance += transaction.Amount;
+
+                    transaction.Operation = "Internal transaction";
+                    toAccount.Balance += Math.Abs(transaction.Amount);
                     _transactionRepo.Create(transactionTo);
                     _accountRepo.Update(toAccount);
                 }
+
+                if (transaction.Bank is not null)
+                {
+                    transaction.Operation = "Collection from Another Bank";
+                }
             }
-            fromAccount.Balance -= transaction.Amount;
+
+            fromAccount.Balance += transaction.Amount;
             transaction.Balance = fromAccount.Balance;
 
             _transactionRepo.Create(transaction);
@@ -107,9 +126,8 @@ namespace BankApp.Application.Services
         {
             List<TransactionDTO> transactionsDTO = new();
 
-            var transactions = _transactionRepo.GetAll().Where(t => t.AccountId == parameters.AccountId).ToList();
+            var transactions = _transactionRepo.GetAll().OrderByDescending(t => t.Date).Where(t => t.AccountId == parameters.AccountId).ToList();
             var transSkipped = transactions
-                .OrderByDescending(t => t.Date)
                 .Skip((parameters.PageNumber - 1) * parameters.PageSize)
                 .Take(parameters.PageSize).ToList();
 

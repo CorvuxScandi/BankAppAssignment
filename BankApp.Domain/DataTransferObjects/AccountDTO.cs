@@ -9,7 +9,12 @@ namespace BankApp.Enteties.DataTransferObjects
 {
     public class AccountDTO
     {
+        [DisplayName("Kund ID")]
+        public int CustomerId { get; set; }
+
+        [DisplayName("Konto ID")]
         public int AccountId { get; set; }
+
         public int AccountTypesId { get; set; }
 
         [DisplayName("Frekvens")]

@@ -1,36 +1,34 @@
 ﻿@page
 @model BankApp.Frontend.Models.GiveLoanViewModel
 
-
 <div class="container">
-
 
     <div class="row">
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    <p>@Model.CustomerInfo.CustomerInfo.Surname @Model.CustomerInfo.CustomerInfo.Givenname</p>
+                    <p>@Model.Customer.Surname @Model.Customer.Givenname</p>
                 </div>
                 <div class="card-body">
                     <p>Accounts</p>
                     <ul class="list-group list-group-horizontal">
-                        @foreach (var acc in Model.CustomerInfo.Accounts)
+
+                        @foreach (var acc in Model.Accounts)
                         {
                             <li class="list-group-item">
                                 <p>@acc.AccountId</p>
                             </li>
                         }
-                    </ul>     
+                    </ul>
                 </div>
             </div>
         </div>
-
 
         <div class="col">
             <form asp-action="Loan" asp-controller="Admin">
                 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
-                <input asp-for="LoanDTO.AccountId" type="number" value="@Model.LoanDTO.AccountId" class="form-control" />
+                <input asp-for="LoanDTO.AccountId" type="number" class="form-control" />
                 <input type="hidden" value="@DateTime.Now" class="form-control" asp-for="LoanDTO.Date" />
                 <input type="number" asp-for="LoanDTO.Amount" class="form-control" />
                 <input type="number" step="1" asp-for="LoanDTO.Duration" class="form-control" />
@@ -42,6 +40,8 @@
                     <option value="Finished">Finished</option>
                     <option value="Finished-Not payed">Finished-Not payed</option>
                 </select>
+
+                <input type="submit" class="btn btn-primary" value="Ge lån" />
             </form>
         </div>
     </div>

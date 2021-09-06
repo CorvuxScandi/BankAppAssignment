@@ -1,17 +1,15 @@
-﻿using BankApp.Enteties.DataTransferObjects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace BankApp.Frontend.Models
+namespace BankApp.Enteties.DataTransferObjects
 {
-    public class GiveLoanViewModel
+    public class CustomerAndAccounts
     {
         public CustomerDTO Customer { get; set; }
 
         public List<AccountDTO> Accounts { get; set; }
-
-        public LoanDTO LoanDTO { get; set; }
     }
 }

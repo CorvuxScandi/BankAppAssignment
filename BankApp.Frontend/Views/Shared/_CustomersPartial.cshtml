@@ -1,0 +1,83 @@
+﻿@using BankApp.Enteties.DataTransferObjects
+@model PagedList<CustomerDTO>
+
+<div>
+    <p>Page: @Model.MetaData.CurrentPage / @Model.MetaData.TotalPages</p>
+    <div class="spinner-border m-1" role="status" style="display:none" id="loading">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="overflow-auto" style="max-height: 800px">
+        <ul class="list-group list-group-flush">
+            @foreach (var c in @Model)
+            {
+                <li class="list-group-item">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="container">
+                                <p>ID: @c.CustomerId</p>
+                                <p>Namn: @c.Surname @c.Givenname</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <p>Addres: @c.Streetaddress</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <p>Postort: @c.City</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <p>Postkod: @c.Zipcode</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <p>Land: @c.Country</p>
+                                        </li>
+                                    </ul>
+                                    <a asp-action="Loan" asp-controller="Admin" asp-route-id="@c.CustomerId">Ge lån</a>
+                                </div>
+                                <div class="col">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <p>Kön: @c.Gender</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <p>Födelsedag: @c.Birthday.Value.ToShortDateString()</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <p>Telefon: @c.Telephonenumber</p>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <p>Email: @c.Emailaddress</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        <div class="d-flex justify-content-between">
+            <a id="show-prev" class="btn btn-secondary"
+               asp-action="PrevCustomers"
+               asp-controller="Admin"
+               data-ajax="true"
+               data-ajax-update="#transactions"
+               data-ajax-mode="replace"
+               data-ajax-loading="#loading">
+                Backa
+            </a>
+            <a id="show-next" class="btn btn-secondary"
+               asp-action="NextCustomers"
+               asp-controller="Admin"
+               data-ajax="true"
+               data-ajax-update="#transactions"
+               data-ajax-mode="replace"
+               data-ajax-loading="#loading">
+                Nästa
+            </a>
+        </div>
+    </div>
+</div>

@@ -58,7 +58,6 @@ namespace BankApp.Frontend.Controllers
 
             var transactionResp = await _clientService.CallAPI($"customer/{query}");
 
-
             if (transactionResp.IsSuccessStatusCode)
             {
                 var transactionList = JsonConvert.DeserializeObject<List<TransactionDTO>>(transactionResp.Content.ReadAsStringAsync().Result);
@@ -130,6 +129,7 @@ namespace BankApp.Frontend.Controllers
         //[HttpPost]
         public async Task<IActionResult> Transaction(TransactionDTO transaction)
         {
+            transaction.Amount *= -1;
             var resp = await _clientService.CallAPI("customer/transaction", transaction);
             if (resp.IsSuccessStatusCode)
             {
